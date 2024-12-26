@@ -1,0 +1,238 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TeacherStatus {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+enum MeetingTypeEnum {
+  ONLINE
+  OFFLINE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  EXCUSED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+  INSTALLMENT
+}
+
+enum Days {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+enum SessionName {
+  SESSION_1
+  MORNING_SESSION
+  AFTERNOON_SESSION
+  EVENING_SESSION
+}
+
+model Profile {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  place_of_birth String   @db.VarChar(255)
+  date_of_birth  DateTime @db.Date
+  address        String   @db.VarChar(255)
+  domicile       String   @db.VarChar(255)
+  phone_number   String   @db.VarChar(20)
+  profession     String   @db.VarChar(255)
+  user_id        Int      @unique
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Registration {
+  id             Int     @id @default(autoincrement())
+  motivation     String  @db.VarChar(255)
+  user_id        Int
+  batch_id       Int
+  payment_status String  @db.VarChar(255)
+  class_type     String  @db.VarChar(255)
+  voice_note     String? @db.VarChar(255)
+  schedule       String  @db.VarChar(255)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "registration_user_id_foreign")
+
+  attendance Attendance[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique(map: "roles_name_unique") @db.VarChar(255)
+  users User[]
+}
+
+model User {
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique(map: "users_email_unique") @db.VarChar(255)
+  password           String         @db.VarChar(255)
+  username           String         @unique @db.VarChar(255)
+  hashedRefreshToken String?        @db.VarChar(255)
+  role_id            Int            @default(2)
+  registrations      Registration[]
+  profile            Profile?
+  role               Role           @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
+}
+
+model Batch {
+  id       Int @id @default(autoincrement())
+  year     Int
+  semester Int
+  cohort   Int
+
+  calendars Calendar[]
+  schedules Schedule[]
+}
+
+model Calendar {
+  id         Int      @id @default(autoincrement())
+  batch_id   Int
+  event_id   Int
+  start_date DateTime
+  end_date   DateTime
+
+  event Event? @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  batch Batch? @relation(fields: [batch_id], references: [id], onUpdate: NoAction, onDelete: NoAction)
+}
+
+model Event {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique @db.VarChar(255)
+  is_active Boolean @default(true)
+
+  calendars Calendar[]
+}
+
+model Class {
+  id         Int    @id @default(autoincrement())
+  name       String @unique(map: "classes_name_unique") @db.VarChar(255)
+  teacher_id Int
+  level_id   Int
+
+  teacher Teacher @relation(fields: [teacher_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "classes_teacher_id_foreign")
+  level   Level   @relation(fields: [level_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "classes_level_id_foreign")
+
+  grade_components GradeComponent[]
+  sessions         Session[]
+  course_fee       CourseFee[]
+}
+
+model Level {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique(map: "levels_name_unique") @db.VarChar(255)
+  is_active Boolean @default(true)
+
+  classes Class[]
+}
+
+model Teacher {
+  id     Int           @id @default(autoincrement())
+  name   String        @db.VarChar(255)
+  status TeacherStatus @default(OFFLINE)
+
+  classes Class[]
+}
+
+model GradeComponent {
+  id           Int @id @default(autoincrement())
+  class_id     Int
+  component_id Int
+
+  class     Class?     @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  component Component? @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Component {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+
+  grade_components GradeComponent[]
+}
+
+model Session {
+  id         Int      @id @default(autoincrement())
+  class_id   Int
+  date       DateTime
+  start_time String   @db.VarChar(100)
+
+  class Class? @relation(fields: [class_id], references: [id], onDelete: Cascade)
+}
+
+model Attendance {
+  id              Int              @id @default(autoincrement())
+  session_id      Int
+  registration_id Int
+  status          AttendanceStatus
+
+  registration Registration? @relation(fields: [registration_id], references: [id])
+}
+
+model Schedule {
+  id            Int             @id @default(autoincrement())
+  batch_id      Int
+  class_id      Int
+  type          MeetingTypeEnum
+  day_id        Int
+  start_time_id Int
+  end_time      String          @db.VarChar(100)
+
+  time  Time   @relation(fields: [start_time_id], references: [id])
+  day   Day?   @relation(fields: [day_id], references: [id])
+  batch Batch? @relation(fields: [batch_id], references: [id])
+}
+
+model Time {
+  id           Int         @id @default(autoincrement())
+  start_time   Int
+  end_time     Int
+  session_name SessionName
+  is_active    Boolean     @default(true)
+
+  schedules Schedule[]
+
+  @@unique([start_time, end_time])
+}
+
+model Day {
+  id        Int     @id @default(autoincrement())
+  name      Days    @unique
+  is_active Boolean @default(true)
+
+  schedules Schedule[]
+}
+
+model BankAccounts {
+  id             Int     @id @default(autoincrement())
+  account_name   String  @unique @db.VarChar(255)
+  account_number Int     @unique
+  bank_name      String  @db.VarChar(100)
+  is_active      Boolean @default(true)
+}
+
+model CourseFee {
+  id       Int @id @default(autoincrement())
+  fee      Int
+  class_id Int
+
+  class Class @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
