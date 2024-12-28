@@ -20,8 +20,19 @@ async function main() {
     skipDuplicates: true, // Skip if level already exists
   });
 
+  // Create admin
+  const admin = await prisma.user.create({
+    data: {
+      username: 'Admin',
+      password: 'securepassword123',
+      email: 'admin@gmail.com',
+      role_id: 1,
+    },
+  });
+
   console.log(`Roles seeded: ${roles.count}`);
   console.log(`Levels seeded: ${levels.count}`);
+  console.log(`Admin seeded with username: ${admin.username}`);
 }
 
 main()
