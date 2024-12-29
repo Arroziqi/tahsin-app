@@ -1,0 +1,1 @@
+export const API_BASE_URL = "https://single-ursulina-ziqi-9de690d6.koyeb.app/api";
