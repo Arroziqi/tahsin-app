@@ -53,6 +53,12 @@ import { BankAccountController } from 'src/features/master-data/presentation/con
 import { CourseFeeController } from 'src/features/master-data/presentation/controllers/course-fee/course-fee.controller';
 import { TimeService } from 'src/features/master-data/domain/services/time.service';
 import { SchedulePrismaDatasourcesImpl } from './data/datasources/schedule.prisma.datasources';
+import { ScheduleService } from './domain/services/schedule.service';
+import { AddScheduleUsecase } from './domain/usecases/schedule/add-schedule.usecase';
+import { UpdateScheduleUsecase } from './domain/usecases/schedule/update-schedule.usecase';
+import { DeleteScheduleUsecase } from './domain/usecases/schedule/delete-schedule.usecase';
+import { GetAllScheduleUsecase } from './domain/usecases/schedule/getAll-schedule';
+import { ScheduleController } from './presentation/controllers/schedule/schedule.controller';
 
 @Module({
   controllers: [
@@ -63,6 +69,7 @@ import { SchedulePrismaDatasourcesImpl } from './data/datasources/schedule.prism
     EventController,
     BankAccountController,
     CourseFeeController,
+    ScheduleController,
   ],
   providers: [
     // Level
@@ -101,14 +108,21 @@ import { SchedulePrismaDatasourcesImpl } from './data/datasources/schedule.prism
     DeleteBankAccountUseCase,
     GetAllBankAccountUsecase,
 
-    //  Course Fee
+    // Course Fee
     AddCourseFeeUsecase,
     UpdateCourseFeeUsecase,
     DeleteCourseFeeUsecase,
     GetAllCourseFeeUsecase,
 
+    // Schedule
+    AddScheduleUsecase,
+    UpdateScheduleUsecase,
+    DeleteScheduleUsecase,
+    GetAllScheduleUsecase,
+
     // service
     TimeService,
+    ScheduleService,
 
     // Repository
     {

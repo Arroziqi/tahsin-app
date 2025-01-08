@@ -1,4 +1,8 @@
-import { DataState, DataSuccess } from 'src/core/resources/data.state';
+import {
+  DataFailed,
+  DataState,
+  DataSuccess,
+} from 'src/core/resources/data.state';
 import { Injectable, Logger } from '@nestjs/common';
 import { ScheduleModel } from '../models/schedule.model';
 import { MeetingTypeEnum } from '@prisma/client';
@@ -66,7 +70,7 @@ export class SchedulePrismaDatasourcesImpl
 
       if (!data || data.length === 0) {
         this.logger.warn(`schedule not found`);
-        throw new ErrorEntity(404, 'schedule not found');
+        return new DataFailed(new ErrorEntity(404, 'schedule not found'));
       }
 
       this.logger.log(`successfully find schedule by day_id`);
@@ -94,7 +98,7 @@ export class SchedulePrismaDatasourcesImpl
 
       if (!data || data.length === 0) {
         this.logger.warn(`schedule not found`);
-        throw new ErrorEntity(404, 'schedule not found');
+        return new DataFailed(new ErrorEntity(404, 'schedule not found'));
       }
 
       this.logger.log(`successfully find schedule by time_id`);
@@ -122,7 +126,7 @@ export class SchedulePrismaDatasourcesImpl
 
       if (!data || data.length === 0) {
         this.logger.warn(`schedule not found`);
-        throw new ErrorEntity(404, 'schedule not found');
+        return new DataFailed(new ErrorEntity(404, 'schedule not found'));
       }
 
       this.logger.log(`successfully find schedule by type`);
@@ -162,10 +166,15 @@ export class SchedulePrismaDatasourcesImpl
     }
   }
   async create(schedule: ScheduleModel): Promise<DataState<ScheduleModel>> {
+    const { id, Time, Day, ...createData } = schedule;
     try {
       this.logger.log('creating schedule');
       const data = await this.prismaService.schedules.create({
-        data: schedule,
+        data: createData,
+        include: {
+          Day: true,
+          Time: true,
+        },
       });
 
       this.logger.log('successfully create schedule');
@@ -176,9 +185,37 @@ export class SchedulePrismaDatasourcesImpl
     }
   }
   async update(schedule: ScheduleModel): Promise<DataState<ScheduleModel>> {
-    throw new Error('Method not implemented.');
+    const { id, Time, Day, ...updateData } = schedule;
+    try {
+      this.logger.log('updating schedule');
+      const data = await this.prismaService.schedules.update({
+        where: { id },
+        data: updateData,
+        include: {
+          Day: true,
+          Time: true,
+        },
+      });
+
+      this.logger.log('successfully update schedule');
+      return new DataSuccess(new ScheduleModel(data));
+    } catch (e) {
+      this.logger.error(`error updating schedule: ${e.message}`);
+      throw new ErrorEntity(e.statusCode, e.message);
+    }
   }
   async delete(id: number): Promise<DataState<string>> {
-    throw new Error('Method not implemented.');
+    try {
+      this.logger.log('deleting schedule');
+      const data = await this.prismaService.schedules.delete({
+        where: { id },
+      });
+
+      this.logger.log('successfully delete schedule');
+      return new DataSuccess('OK');
+    } catch (e) {
+      this.logger.error(`error deleting schedule: ${e.message}`);
+      throw new ErrorEntity(e.statusCode, e.message);
+    }
   }
 }

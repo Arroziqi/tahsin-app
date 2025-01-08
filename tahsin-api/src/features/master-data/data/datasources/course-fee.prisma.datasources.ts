@@ -35,9 +35,6 @@ export class CourseFeePrismaDatasourcesImpl
       this.logger.log(`Finding course fee with id: ${id}`);
       const data = await this.prismaService.courseFee.findFirst({
         where: { id },
-        include: {
-          class: includeClass,
-        },
       });
 
       if (!data) {
@@ -59,9 +56,6 @@ export class CourseFeePrismaDatasourcesImpl
     try {
       this.logger.log(`Finding all course fees`);
       const data = await this.prismaService.courseFee.findMany({
-        include: {
-          class: includeClass,
-        },
         orderBy: {
           id: 'asc',
         },

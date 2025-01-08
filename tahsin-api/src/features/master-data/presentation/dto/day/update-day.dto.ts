@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { DaysEnum } from 'src/core/types/enum/days.enum';
+import { Days } from '@prisma/client';
 
 export const UpdateDaySchema = z.object({
-  name: z.nativeEnum(DaysEnum).optional(),
+  name: z.nativeEnum(Days).optional(),
   is_active: z
     .union([
       z.boolean(),

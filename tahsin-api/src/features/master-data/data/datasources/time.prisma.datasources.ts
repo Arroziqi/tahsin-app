@@ -7,10 +7,7 @@ import { TimeModel } from 'src/features/master-data/data/models/time.model';
 import { Injectable, Logger } from '@nestjs/common';
 import { ErrorEntity } from 'src/core/domain/entities/error.entity';
 import { PrismaService } from 'src/common/services/prisma.service';
-import {
-  SessionNameEnum,
-  toSessionNameEnum,
-} from 'src/core/types/enum/session-name.enum';
+import { SessionNameEnum } from 'src/core/types/enum/session-name.enum';
 
 export interface TimePrismaDatasources {
   findOverlappingTime(
@@ -88,12 +85,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       }
 
       this.logger.log(`Successfully find overlapping time `);
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (error) {
       this.logger.error(`Error finding overlapping time`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -119,12 +111,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       }
 
       this.logger.log(`Successfully find time with start_time: ${start_time}`);
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (error) {
       this.logger.error(
         `Error finding time with start_time ${start_time}: ${error.message}`,
@@ -152,12 +139,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       }
 
       this.logger.log(`Successfully find time with id: ${id}`);
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (error) {
       this.logger.error(`Error finding time with id ${id}: ${error.message}`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -185,12 +167,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       this.logger.log(
         `Successfully found time with session_name: ${session_name}`,
       );
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (error) {
       this.logger.error(`Error finding time with name: ${name}`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -215,15 +192,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       }
 
       this.logger.log(`Successfully found all times`);
-      return new DataSuccess(
-        data.map(
-          (time) =>
-            new TimeModel({
-              ...time,
-              session_name: toSessionNameEnum(time.session_name),
-            }),
-        ),
-      );
+      return new DataSuccess(data.map((time) => new TimeModel(time)));
     } catch (error) {
       this.logger.error(`Error finding all times: ${error.message}`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -238,12 +207,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       });
 
       this.logger.log(`Successfully created time`);
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (e) {
       this.logger.error(`Error creating time: ${e}`);
       throw new ErrorEntity(500, e.message);
@@ -259,12 +223,7 @@ export class TimePrismaDataSourcesImpl implements TimePrismaDatasources {
       });
 
       this.logger.log(`Successfully updated time with id: ${time.id}`);
-      return new DataSuccess(
-        new TimeModel({
-          ...data,
-          session_name: toSessionNameEnum(data.session_name),
-        }),
-      );
+      return new DataSuccess(new TimeModel(data));
     } catch (e) {
       this.logger.error(`Error updating time with id: ${time.id}`);
       throw new ErrorEntity(500, e.message);

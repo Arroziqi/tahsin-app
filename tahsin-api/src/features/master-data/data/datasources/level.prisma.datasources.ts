@@ -35,9 +35,6 @@ export class LevelPrismaDataSourcesImpl implements LevelPrismaDataSources {
       this.logger.log(`Finding level with id: ${id}`);
       const data = await this.prismaService.level.findFirst({
         where: { id },
-        include: {
-          classes: includeClass,
-        },
       });
 
       if (!data) {
@@ -61,9 +58,6 @@ export class LevelPrismaDataSourcesImpl implements LevelPrismaDataSources {
       this.logger.log(`Finding level with name: ${name}`);
       const data = await this.prismaService.level.findFirst({
         where: { name },
-        include: {
-          classes: includeClass,
-        },
       });
 
       if (!data) {
@@ -88,9 +82,6 @@ export class LevelPrismaDataSourcesImpl implements LevelPrismaDataSources {
     try {
       this.logger.log(`Finding all levels`);
       const data = await this.prismaService.level.findMany({
-        include: {
-          classes: includeClass,
-        },
         orderBy: {
           id: 'asc',
         },

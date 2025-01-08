@@ -42,9 +42,6 @@ export class EventPrismaDataSourcesImpl implements EventPrismaDatasources {
       this.logger.log(`Finding event with id: ${id}`);
       const data = await this.prismaService.event.findFirst({
         where: { id },
-        include: {
-          calendars: includeCalendar,
-        },
       });
 
       if (!data) {
@@ -68,9 +65,6 @@ export class EventPrismaDataSourcesImpl implements EventPrismaDatasources {
       this.logger.log(`Finding event with name: ${name}`);
       const data = await this.prismaService.event.findFirst({
         where: { name },
-        include: {
-          calendars: includeCalendar,
-        },
       });
 
       if (!data) {
@@ -90,9 +84,6 @@ export class EventPrismaDataSourcesImpl implements EventPrismaDatasources {
     try {
       this.logger.log('Finding all events');
       const data = await this.prismaService.event.findMany({
-        include: {
-          calendars: includeCalendar,
-        },
         orderBy: {
           id: 'asc',
         },

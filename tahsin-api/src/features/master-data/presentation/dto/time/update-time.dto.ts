@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SessionNameEnum } from 'src/core/types/enum/session-name.enum';
+import { SessionName } from '@prisma/client';
 
 export const UpdateTimeSchema = z.object({
   start_time: z
@@ -18,7 +18,7 @@ export const UpdateTimeSchema = z.object({
     .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format waktu harus HH:mm')
     .optional(),
 
-  session_name: z.nativeEnum(SessionNameEnum).optional(),
+  session_name: z.nativeEnum(SessionName).optional(),
 
   is_active: z
     .union([z.boolean(), z.string()])
