@@ -1,4 +1,1 @@
-export enum MeetingTypeEnum {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE',
-}
+export type MeetingTypeEnum = 'ONLINE' | 'OFFLINE';

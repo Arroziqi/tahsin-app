@@ -1,4 +1,4 @@
-import { SessionNameEnum } from 'src/core/types/enum/session-name.enum';
+import { SessionNameEnum } from '../../../../core/types/enum/session-name.enum';
 
 export class TimeModel {
   id: number;

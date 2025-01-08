@@ -6,6 +6,7 @@ import {
   DAY_REPO_TOKEN,
   EVENT_REPO_TOKEN,
   LEVEL_REPO_TOKEN,
+  SCHEDULE_REPO_TOKEN,
   TIME_REPO_TOKEN,
 } from 'src/core/const/provider.token';
 import { LevelPrismaDataSourcesImpl } from './data/datasources/level.prisma.datasources';
@@ -51,6 +52,7 @@ import { GetAllCourseFeeUsecase } from 'src/features/master-data/domain/usecases
 import { BankAccountController } from 'src/features/master-data/presentation/controllers/bank-account/bank-account.controller';
 import { CourseFeeController } from 'src/features/master-data/presentation/controllers/course-fee/course-fee.controller';
 import { TimeService } from 'src/features/master-data/domain/services/time.service';
+import { SchedulePrismaDatasourcesImpl } from './data/datasources/schedule.prisma.datasources';
 
 @Module({
   controllers: [
@@ -136,6 +138,10 @@ import { TimeService } from 'src/features/master-data/domain/services/time.servi
     {
       provide: COURSE_FEE_REPO_TOKEN,
       useClass: CourseFeePrismaDatasourcesImpl,
+    },
+    {
+      provide: SCHEDULE_REPO_TOKEN,
+      useClass: SchedulePrismaDatasourcesImpl,
     },
   ],
 })

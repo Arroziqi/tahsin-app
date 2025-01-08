@@ -7,7 +7,7 @@ import { DayModel } from 'src/features/master-data/data/models/day.model';
 import { Injectable, Logger } from '@nestjs/common';
 import { ErrorEntity } from 'src/core/domain/entities/error.entity';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { DaysEnum, toDaysEnum } from 'src/core/types/enum/days.enum';
+import { DaysEnum } from 'src/core/types/enum/days.enum';
 
 export interface DayPrismaDatasources {
   findById(id: number, includeSchedule?: boolean): Promise<DataState<DayModel>>;
@@ -51,9 +51,7 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       }
 
       this.logger.log(`Successfully find day with id: ${id}`);
-      return new DataSuccess(
-        new DayModel({ ...data, name: toDaysEnum(data.name) }),
-      );
+      return new DataSuccess(new DayModel(data));
     } catch (error) {
       this.logger.error(`Error finding day with id ${id}: ${error.message}`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -79,9 +77,7 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       }
 
       this.logger.log(`Successfully found day with name: ${name}`);
-      return new DataSuccess(
-        new DayModel({ ...data, name: toDaysEnum(data.name) }),
-      );
+      return new DataSuccess(new DayModel(data));
     } catch (error) {
       this.logger.error(`Error finding day with name: ${name}`);
       throw new ErrorEntity(500, error.message);
@@ -106,9 +102,7 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       }
 
       this.logger.log('Successfully found all days');
-      return new DataSuccess(
-        data.map((day) => new DayModel({ ...day, name: toDaysEnum(day.name) })),
-      );
+      return new DataSuccess(data.map((day) => new DayModel(day)));
     } catch (error) {
       this.logger.error(`Error finding all days: ${error.message}`);
       throw new ErrorEntity(error.statusCode, error.message);
@@ -123,12 +117,10 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       });
 
       this.logger.log(`Successfully created day with id: ${data.id}`);
-      return new DataSuccess(
-        new DayModel({ ...data, name: toDaysEnum(data.name) }),
-      );
+      return new DataSuccess(new DayModel(data));
     } catch (error) {
       this.logger.error(`Error creating day: ${error.message}`);
-      throw new ErrorEntity(500, error.message);
+      throw new ErrorEntity(error.statusCode, error.message);
     }
   }
 
@@ -141,12 +133,10 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       });
 
       this.logger.log(`Successfully updated day with id: ${day.id}`);
-      return new DataSuccess(
-        new DayModel({ ...data, name: toDaysEnum(data.name) }),
-      );
+      return new DataSuccess(new DayModel(data));
     } catch (error) {
       this.logger.error(`Error updating day with id: ${day.id}`);
-      throw new ErrorEntity(500, error.message);
+      throw new ErrorEntity(error.statusCode, error.message);
     }
   }
 
@@ -161,7 +151,7 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       return new DataSuccess('OK');
     } catch (error) {
       this.logger.error(`Error deleting day with id: ${id}`);
-      throw new ErrorEntity(500, error.message);
+      throw new ErrorEntity(error.statusCode, error.message);
     }
   }
 }

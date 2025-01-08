@@ -187,7 +187,7 @@ model Component {
 //   registration Registration? @relation(fields: [registration_id], references: [id])
 // }
 
-model Schedule {
+model Schedules {
   id      Int             @id @default(autoincrement())
   day_id  Int
   time_id Int
@@ -204,7 +204,7 @@ model Time {
   session_name SessionName
   is_active    Boolean     @default(true)
 
-  schedules Schedule[]
+  schedules Schedules[]
 
   @@unique([start_time, end_time])
 }
@@ -214,7 +214,7 @@ model Day {
   name      Days    @unique
   is_active Boolean @default(true)
 
-  schedules Schedule[]
+  schedules Schedules[]
 }
 
 model BankAccounts {
