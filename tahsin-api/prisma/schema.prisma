@@ -155,3 +155,8 @@ model CourseFee {
 
   // class Class @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
+
+model AcademicTerm {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(255)
+}
