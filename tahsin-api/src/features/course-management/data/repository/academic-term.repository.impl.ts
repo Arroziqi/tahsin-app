@@ -12,6 +12,10 @@ export class AcademicTermRepositoryImpl implements AcademicTermRepository {
     private readonly academicTermRepository: AcademicTermRepository,
   ) {}
 
+  async findByName(name: string): Promise<DataState<AcademicTermEntity>> {
+    return await this.academicTermRepository.findByName(name);
+  }
+
   async findAll(): Promise<DataState<AcademicTermEntity[]>> {
     return await this.academicTermRepository.findAll();
   }

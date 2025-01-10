@@ -4,6 +4,7 @@ import { AcademicTermEntity } from '../entities/academic-term.entity';
 export interface AcademicTermRepository {
   findAll(): Promise<DataState<AcademicTermEntity[]>>;
   findById(id: number): Promise<DataState<AcademicTermEntity>>;
+  findByName(name: string): Promise<DataState<AcademicTermEntity>>;
   create(
     academicTerm: AcademicTermEntity,
   ): Promise<DataState<AcademicTermEntity>>;

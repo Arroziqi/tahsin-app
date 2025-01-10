@@ -6,8 +6,10 @@ import { AddAcademicTermUsecase } from '../domain/usecases/academic-term/add-aca
 import { UpdateAcademicTermUsecase } from '../domain/usecases/academic-term/update-academicTerm.usecase';
 import { DeleteAcademicTermUsecase } from '../domain/usecases/academic-term/delete-academicTerm.usecase';
 import { AcademicTermService } from '../domain/services/academic-term.service';
+import { AcademicTermController } from '../presentation/controllers/academicTerm.controller';
 
 @Module({
+  controllers: [AcademicTermController],
   providers: [
     AcademicTermService,
     GetAllAcademicTermUsecase,

@@ -84,7 +84,7 @@ model Event {
   name      String  @unique @db.VarChar(255)
   is_active Boolean @default(true)
 
-  // calendars Calendar[]
+  academicCalenders AcademicCalender[]
 }
 
 model Level {
@@ -159,4 +159,19 @@ model CourseFee {
 model AcademicTerm {
   id   Int    @id @default(autoincrement())
   name String @unique @db.VarChar(255)
+
+  academicCalenders AcademicCalender[]
+}
+
+model AcademicCalender {
+  id              Int      @id @default(autoincrement())
+  academicTerm_id Int
+  event_id        Int
+  start_date      DateTime
+  end_date        DateTime
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
+  Event        Event?        @relation(fields: [event_id], references: [id])
 }

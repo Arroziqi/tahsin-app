@@ -80,7 +80,7 @@ export class DayPrismaDataSourcesImpl implements DayPrismaDatasources {
       return new DataSuccess(new DayModel(data));
     } catch (error) {
       this.logger.error(`Error finding day with name: ${name}`);
-      throw new ErrorEntity(500, error.message);
+      throw new ErrorEntity(error.statusCode, error.message);
     }
   }
 
