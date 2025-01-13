@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { USER_REPO_TOKEN } from 'src/core/const/provider.token';
 import { UserRepository } from 'src/features/user-management/domain/repository/user.repository';
 import { ErrorEntity } from 'src/core/domain/entities/error.entity';
@@ -50,6 +50,17 @@ export class UserService {
         'Email already exist, please use another email',
         'Email already exist',
       );
+    }
+  }
+
+  async checkExistingUserWithId(id: number): Promise<void> {
+    this.logger.debug(`Checking if user exists with id: ${id}`);
+
+    const existingUser = await this.userRepository.findById(id);
+
+    if (!existingUser.data) {
+      this.logger.warn(`User with id ${id} not found`);
+      throw new NotFoundException('User with given ID does not exist');
     }
   }
 }

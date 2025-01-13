@@ -77,6 +77,8 @@ model User {
   // registrations      Registration[]
   profile            Profile?
   role               Role     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
+  Teacher            Teacher?
+  Class Class[]
 }
 
 model Event {
@@ -92,15 +94,15 @@ model Level {
   name      String  @unique(map: "levels_name_unique") @db.VarChar(255)
   is_active Boolean @default(true)
 
-  // classes Class[]
+  classes Class[]
 }
 
 model Teacher {
-  id     Int           @id @default(autoincrement())
-  name   String        @db.VarChar(255)
-  status TeacherStatus @default(OFFLINE)
+  id      Int           @id @default(autoincrement())
+  user_id Int           @unique
+  status  TeacherStatus @default(OFFLINE)
 
-  // classes Class[]
+  user    User    @relation(fields: [user_id], references: [id])
 }
 
 model Component {
@@ -174,4 +176,14 @@ model AcademicCalender {
 
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
   Event        Event?        @relation(fields: [event_id], references: [id])
+}
+
+model Class {
+  id         Int    @id @default(autoincrement())
+  name       String @unique @db.VarChar(255)
+  user_id Int
+  level_id   Int
+
+  User User? @relation(fields: [user_id], references: [id])
+  Level    Level?   @relation(fields: [level_id], references: [id])
 }
