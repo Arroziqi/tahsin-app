@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   DataFailed,
   DataState,
@@ -182,6 +182,12 @@ export class AcademicCalenderPrismaDatasourcesImpl
       return new DataSuccess(new AcademicCalenderModel(data));
     } catch (error) {
       this.logger.error(`Error creating academic calender`);
+      if (error.code === 'P2003') {
+        throw new ErrorEntity(
+          HttpStatus.BAD_REQUEST,
+          `${error.meta.field_name} not found in the database. Please ensure the provided event ID is valid.`,
+        );
+      }
       throw new ErrorEntity(error.statusCode, error.message);
     }
   }
@@ -204,6 +210,12 @@ export class AcademicCalenderPrismaDatasourcesImpl
       return new DataSuccess(new AcademicCalenderModel(data));
     } catch (error) {
       this.logger.error(`Error updating academic calender`);
+      if (error.code === 'P2003') {
+        throw new ErrorEntity(
+          HttpStatus.BAD_REQUEST,
+          `${error.meta.field_name} not found in the database. Please ensure the provided event ID is valid.`,
+        );
+      }
       throw new ErrorEntity(error.statusCode, error.message);
     }
   }
