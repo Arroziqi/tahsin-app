@@ -7,16 +7,18 @@ import {
 import { AcademicTermModel } from '../models/academic-term.model';
 import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 import { PrismaService } from '../../../../common/services/prisma.service';
+import { AddAcademicTermDto } from '../../presentation/dto/academic-term/add-academicTerm.dto';
+import { UpdateAcademicTermDto } from '../../presentation/dto/academic-term/update-academicTerm.dto';
 
 export interface AcademicTermPrismaDatasources {
   findAll(): Promise<DataState<AcademicTermModel[]>>;
   findById(id: number): Promise<DataState<AcademicTermModel>>;
   findByName(name: string): Promise<DataState<AcademicTermModel>>;
   create(
-    academicTerm: AcademicTermModel,
+    academicTerm: AddAcademicTermDto,
   ): Promise<DataState<AcademicTermModel>>;
   update(
-    academicTerm: AcademicTermModel,
+    academicTerm: UpdateAcademicTermDto & { id: number },
   ): Promise<DataState<AcademicTermModel>>;
   delete(id: number): Promise<DataState<string>>;
 }
@@ -88,7 +90,7 @@ export class AcademicTermPrismaDatasourcesImpl
     }
   }
   async create(
-    academicTerm: AcademicTermModel,
+    academicTerm: Required<AddAcademicTermDto>,
   ): Promise<DataState<AcademicTermModel>> {
     try {
       this.logger.log(`creating academic term`);
@@ -104,7 +106,7 @@ export class AcademicTermPrismaDatasourcesImpl
     }
   }
   async update(
-    academicTerm: AcademicTermModel,
+    academicTerm: UpdateAcademicTermDto & { id: number },
   ): Promise<DataState<AcademicTermModel>> {
     try {
       this.logger.log(`updating academic term`);

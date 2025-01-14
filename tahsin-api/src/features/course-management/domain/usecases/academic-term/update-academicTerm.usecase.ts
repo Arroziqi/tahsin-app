@@ -19,10 +19,17 @@ export class UpdateAcademicTermUsecase
   async execute(
     input: AcademicTermEntity,
   ): Promise<DataState<AcademicTermEntity>> {
-    await this.academicTermService.checkExistingAcademicTerm(input.id);
+    const existingAcademicTerm = await this.academicTermService.getAcademicTerm(
+      input.id,
+    );
+
+    const data: AcademicTermEntity = {
+      ...input,
+      created_at: existingAcademicTerm.data.created_at,
+    };
 
     this.logger.debug('Updating academic term');
-    const result = await this.academicTermRepository.update(input);
+    const result = await this.academicTermRepository.update(data);
 
     this.logger.log('Successfully updated academic term');
     return result;

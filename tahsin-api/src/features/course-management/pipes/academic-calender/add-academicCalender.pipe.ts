@@ -13,8 +13,9 @@ export class AddAcademicCalenderPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     this.logger.debug('Starting request validation');
+    const { user_id, ...data } = value;
 
-    const result = AddAcademicCalenderSchema.safeParse(value);
+    const result = AddAcademicCalenderSchema.safeParse(data);
 
     if (!result.success) {
       this.logger.error('Request validation failed', result.error.errors);
@@ -22,6 +23,6 @@ export class AddAcademicCalenderPipe implements PipeTransform {
     }
 
     this.logger.debug('Request validation successful');
-    return result.data;
+    return { ...result.data, admin_id: user_id };
   }
 }

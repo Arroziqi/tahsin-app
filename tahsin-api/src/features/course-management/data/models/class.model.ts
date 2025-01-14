@@ -4,10 +4,10 @@ import { LevelModel } from '../../../master-data/data/models/level.model';
 export class ClassModel {
   id: number;
   name: string;
-  user_id: number;
+  teacher_id: number;
   level_id: number;
 
-  User?: UserModel;
+  Teacher?: UserModel;
   Level?: LevelModel;
 
   constructor(data: Partial<ClassModel>) {

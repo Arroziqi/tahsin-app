@@ -20,6 +20,7 @@ import { DeleteAcademicCalenderUsecase } from '../../domain/usecases/academic-ca
 import { GetAllAcademicCalenderUsecase } from '../../domain/usecases/academic-calender/getAll-academicCalender.usecase';
 import { UpdateAcademicCalenderUsecase } from '../../domain/usecases/academic-calender/update-academicCalender.usecase';
 import { AcademicCalenderEntity } from '../../domain/entities/academic-calender.entity';
+import { UserBody } from '../../../../common/decorators/user-body.decorator';
 
 @Controller('/api/academic-calenders')
 @UseGuards(RolesGuard)
@@ -51,7 +52,7 @@ export class AcademicCalenderController {
 
   @Post()
   async createAcademicCalender(
-    @Body(AddAcademicCalenderPipe) request: AcademicCalenderEntity,
+    @UserBody(AddAcademicCalenderPipe) request: AcademicCalenderEntity,
   ): Promise<DataState<AcademicCalenderEntity>> {
     try {
       this.logger.debug('Creating academic calender', { request });

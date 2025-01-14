@@ -20,8 +20,8 @@ export class ClassRepositoryImpl implements ClassRepository {
     return await this.classRepository.findById(id);
   }
 
-  async findByUserId(user_id: number): Promise<DataState<ClassEntity[]>> {
-    return await this.classRepository.findByUserId(user_id);
+  async findByTeacherId(user_id: number): Promise<DataState<ClassEntity[]>> {
+    return await this.classRepository.findByTeacherId(user_id);
   }
 
   async findByLevelId(level_id: number): Promise<DataState<ClassEntity[]>> {

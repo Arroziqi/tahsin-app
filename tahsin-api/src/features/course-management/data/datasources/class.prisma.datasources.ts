@@ -12,7 +12,7 @@ import { ClassEntity } from '../../domain/entities/class.entity';
 export interface ClassPrismaDatasources {
   findAll(): Promise<DataState<ClassModel[]>>;
   findById(id: number): Promise<DataState<ClassModel>>;
-  findByUserId(user_id: number): Promise<DataState<ClassModel[]>>;
+  findByTeacherId(teacher_id: number): Promise<DataState<ClassModel[]>>;
   findByLevelId(level_id: number): Promise<DataState<ClassModel[]>>;
   findByName(name: string): Promise<DataState<ClassModel>>;
   create(classData: ClassEntity): Promise<DataState<ClassModel>>;
@@ -34,7 +34,7 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -58,7 +58,7 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         where: { id },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -75,14 +75,14 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
     }
   }
 
-  async findByUserId(user_id: number): Promise<DataState<ClassModel[]>> {
+  async findByTeacherId(teacher_id: number): Promise<DataState<ClassModel[]>> {
     try {
       this.logger.log('Finding classes by user id');
       const data = await this.prismaService.class.findMany({
-        where: { user_id },
+        where: { teacher_id },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -106,7 +106,7 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         where: { level_id },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -130,7 +130,7 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         where: { name },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -154,11 +154,11 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         data: {
           name: classData.name,
           level_id: classData.level_id,
-          user_id: classData.user_id,
+          teacher_id: classData.teacher_id,
         },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 
@@ -178,11 +178,11 @@ export class ClassPrismaDatasourcesImpl implements ClassPrismaDatasources {
         data: {
           name: classData.name,
           level_id: classData.level_id,
-          user_id: classData.user_id,
+          teacher_id: classData.teacher_id,
         },
         include: {
           Level: true,
-          User: true,
+          Teacher: true,
         },
       });
 

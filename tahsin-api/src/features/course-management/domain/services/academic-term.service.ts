@@ -1,6 +1,8 @@
 import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ACADEMIC_TERMS_REPO_TOKEN } from '../../../../core/const/provider.token';
 import { AcademicTermRepository } from '../repositories/academic-term.repository';
+import { AcademicTermEntity } from '../entities/academic-term.entity';
+import { DataState } from 'src/core/resources/data.state';
 
 @Injectable()
 export class AcademicTermService {
@@ -29,5 +31,10 @@ export class AcademicTermService {
       this.logger.warn(`Academic terms not found...`);
       throw new ConflictException('Academic terms not found.');
     }
+  }
+
+  async getAcademicTerm(id: number): Promise<DataState<AcademicTermEntity>> {
+    await this.checkExistingAcademicTerm(id);
+    return await this.academicTermRepository.findById(id);
   }
 }

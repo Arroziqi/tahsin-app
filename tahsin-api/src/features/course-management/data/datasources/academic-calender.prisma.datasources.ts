@@ -45,6 +45,7 @@ export class AcademicCalenderPrismaDatasourcesImpl
         include: {
           AcademicTerm: true,
           Event: true,
+          Admin: true,
         },
       });
 

@@ -20,6 +20,7 @@ import { DataState } from '../../../../core/resources/data.state';
 import { AcademicTermEntity } from '../../domain/entities/academic-term.entity';
 import { UpdateAcademicTermPipe } from '../../pipes/academic-term/update-academicTerm.pipe';
 import { AddAcademicTermPipe } from '../../pipes/academic-term/add-academicTerm.pipe';
+import { UserBody } from 'src/common/decorators/user-body.decorator';
 
 @Controller('/api/academic-terms')
 @UseGuards(RolesGuard)
@@ -51,7 +52,7 @@ export class AcademicTermController {
 
   @Post()
   async createAcademicTerms(
-    @Body(AddAcademicTermPipe) request: AcademicTermEntity,
+    @UserBody(AddAcademicTermPipe) request: AcademicTermEntity,
   ): Promise<DataState<AcademicTermEntity>> {
     try {
       this.logger.debug('Creating academic term', { request });

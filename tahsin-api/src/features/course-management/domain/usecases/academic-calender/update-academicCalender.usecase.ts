@@ -19,10 +19,16 @@ export class UpdateAcademicCalenderUsecase
   async execute(
     input: AcademicCalenderEntity,
   ): Promise<DataState<AcademicCalenderEntity>> {
-    await this.academicCalenderService.checkExistingAcademicCalender(input.id);
+    const existingAcademicCalender =
+      await this.academicCalenderService.getAcademicCalender(input.id);
+
+    const data: AcademicCalenderEntity = {
+      ...input,
+      created_at: existingAcademicCalender.data.created_at,
+    };
 
     this.logger.debug('Updating academic calender');
-    const result = await this.academicCalenderRepository.update(input);
+    const result = await this.academicCalenderRepository.update(data);
 
     this.logger.log('Successfully updated academic calender');
     return result;

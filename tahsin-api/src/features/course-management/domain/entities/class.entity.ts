@@ -4,10 +4,10 @@ import { LevelEntity } from '../../../master-data/domain/entities/level.entity';
 export class ClassEntity {
   id: number;
   name: string;
-  user_id: number;
+  teacher_id: number;
   level_id: number;
 
-  User?: UserEntity;
+  Teacher?: UserEntity;
   Level?: LevelEntity;
 
   constructor(data: Partial<ClassEntity>) {
