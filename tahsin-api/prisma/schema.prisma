@@ -48,6 +48,12 @@ enum SessionName {
   EVENING_SESSION
 }
 
+enum FeeType {
+  TUITION_FEE
+  DOWN_PAYMENT
+  FINAL_INSTALLMENT
+}
+
 model Profile {
   id             Int      @id @default(autoincrement())
   name           String   @db.VarChar(255)
@@ -72,21 +78,22 @@ model Role {
 }
 
 model User {
-  id                 Int                @id @default(autoincrement())
-  email              String             @unique(map: "users_email_unique") @db.VarChar(255)
-  password           String             @db.VarChar(255)
-  username           String             @unique @db.VarChar(255)
-  hashedRefreshToken String?            @db.VarChar(255)
-  role_id            Int                @default(2)
-  created_at         DateTime           @default(now())
-  updated_at         DateTime           @updatedAt
+  id                     Int                      @id @default(autoincrement())
+  email                  String                   @unique(map: "users_email_unique") @db.VarChar(255)
+  password               String                   @db.VarChar(255)
+  username               String                   @unique @db.VarChar(255)
+  hashedRefreshToken     String?                  @db.VarChar(255)
+  role_id                Int                      @default(2)
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
   // registrations      Registration[]
-  profile            Profile?
-  role               Role               @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
-  Teacher            Teacher?
-  Class              Class[]
-  AcademicTerms      AcademicTerm[]
-  AcademiCalenders   AcademicCalender[]
+  profile                Profile?
+  role                   Role                     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
+  Teacher                Teacher?
+  Class                  Class[]
+  AcademicTerms          AcademicTerm[]
+  AcademiCalenders       AcademicCalender[]
+  AcademicTermPaymentFee AcademicTermPaymentFee[]
 }
 
 model Event {
@@ -187,8 +194,9 @@ model AcademicTerm {
   updated_at  DateTime @updatedAt
   admin_id    Int      @default(1)
 
-  Admin             User?              @relation(fields: [admin_id], references: [id])
-  academicCalenders AcademicCalender[]
+  Admin                  User?                    @relation(fields: [admin_id], references: [id])
+  academicCalenders      AcademicCalender[]
+  AcademicTermPaymentFee AcademicTermPaymentFee[]
 }
 
 model AcademicCalender {
@@ -216,4 +224,20 @@ model Class {
   updated_at DateTime @updatedAt
   Teacher    User?    @relation(fields: [teacher_id], references: [id])
   Level      Level?   @relation(fields: [level_id], references: [id])
+}
+
+model AcademicTermPaymentFee {
+  id              Int      @id @default(autoincrement())
+  academicTerm_id Int      @unique
+  type            FeeType
+  amount          Int
+  description     String?  @db.VarChar(500)
+  due_date        DateTime
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  admin_id        Int      @default(1)
+
+  Admin User? @relation(fields: [admin_id], references: [id])
+
+  AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
 }
