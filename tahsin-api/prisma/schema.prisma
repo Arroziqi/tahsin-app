@@ -19,6 +19,11 @@ enum MeetingTypeEnum {
   OFFLINE
 }
 
+enum MeetingTimeEnum {
+  MORNING
+  EVENING
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -52,21 +57,31 @@ enum FeeType {
   TUITION_FEE
   DOWN_PAYMENT
   FINAL_INSTALLMENT
+  LAB_FEE
+  ACTIVITY_FEE
+}
+
+enum PaymentConfirmationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
 }
 
 model Profile {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(255)
-  place_of_birth String   @db.VarChar(255)
-  date_of_birth  DateTime @db.Date
-  address        String   @db.VarChar(255)
-  domicile       String   @db.VarChar(255)
-  phone_number   String   @db.VarChar(20)
-  profession     String   @db.VarChar(255)
-  user_id        Int      @unique
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                 Int      @id @default(autoincrement())
+  name               String   @db.VarChar(255)
+  place_of_birth     String   @db.VarChar(255)
+  date_of_birth      DateTime @db.Date
+  address            String   @db.VarChar(255)
+  domicile           String   @db.VarChar(255)
+  phone_number       String   @db.VarChar(20)
+  profession         String   @db.VarChar(255)
+  previous_education String   @db.VarChar(255)
+  intended_program   String?  @db.VarChar(255)
+  user_id            Int      @unique
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+  user               User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model Role {
@@ -94,6 +109,8 @@ model User {
   AcademicTerms          AcademicTerm[]
   AcademiCalenders       AcademicCalender[]
   AcademicTermPaymentFee AcademicTermPaymentFee[]
+  Registration           Registration[]
+  PaymentConfirmation    PaymentConfirmation[]
 }
 
 model Event {
@@ -197,6 +214,7 @@ model AcademicTerm {
   Admin                  User?                    @relation(fields: [admin_id], references: [id])
   academicCalenders      AcademicCalender[]
   AcademicTermPaymentFee AcademicTermPaymentFee[]
+  Registration           Registration[]
 }
 
 model AcademicCalender {
@@ -240,4 +258,35 @@ model AcademicTermPaymentFee {
   Admin User? @relation(fields: [admin_id], references: [id])
 
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
+}
+
+model Registration {
+  id                 Int             @id @default(autoincrement())
+  session_type       MeetingTypeEnum
+  session_time       MeetingTimeEnum
+  objective          String          @db.VarChar(500)
+  academicTerm_id    Int
+  user_id            Int
+  audio_path         String?         @db.VarChar(255)
+  available_dateTime DateTime?
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
+
+  AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
+  User         User?         @relation(fields: [user_id], references: [id])
+}
+
+model PaymentConfirmation {
+  id                       Int                       @id @default(autoincrement())
+  type                     FeeType
+  payment_receipt_img_path String                    @db.VarChar(255)
+  amount                   Int
+  transaction_number       String                    @unique
+  transaction_date         DateTime
+  status                   PaymentConfirmationStatus @default(PENDING)
+  created_at               DateTime                  @default(now())
+  updated_at               DateTime                  @updatedAt
+  student_id               Int
+
+  Student User? @relation(fields: [student_id], references: [id])
 }

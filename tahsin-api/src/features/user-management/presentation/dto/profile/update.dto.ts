@@ -1,52 +1,28 @@
 import { z } from 'zod';
 
 export const UpdateProfileSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Nama wajib diisi',
-    })
-    .min(3, 'Nama minimal 3 karakter')
-    .optional(),
+  name: z.string().min(3, 'Nama minimal 3 karakter').optional(),
 
-  place_of_birth: z
-    .string({
-      required_error: 'Tempat lahir wajib diisi',
-    })
-    .optional(),
+  place_of_birth: z.string().optional(),
 
   date_of_birth: z
-    .string({
-      required_error: 'Tanggal lahir wajib diisi',
-    })
+    .string()
     .refine(
       (date) => !isNaN(Date.parse(date)),
       'Format tanggal tidak valid. Gunakan format YYYY-MM-DD',
     )
     .optional(),
 
-  address: z
-    .string({
-      required_error: 'Alamat wajib diisi',
-    })
-    .optional(),
+  address: z.string().optional(),
 
-  domicile: z
-    .string({
-      required_error: 'Domisili wajib diisi',
-    })
-    .optional(),
+  domicile: z.string().optional(),
 
-  phone_number: z
-    .string({
-      required_error: 'Nomor telepon wajib diisi',
-    })
-    .optional(),
+  phone_number: z.string().optional(),
 
-  profession: z
-    .string({
-      required_error: 'Profesi wajib diisi',
-    })
-    .optional(),
+  profession: z.string().optional(),
+  previous_education: z.string().optional(),
+  intended_program: z.string().optional(),
+  user_id: z.number().optional(),
 });
 
 export type UpdateProfileDto = z.infer<typeof UpdateProfileSchema>;

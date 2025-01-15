@@ -4,13 +4,15 @@ import { UserModel } from './user.model';
 export class ProfileModel {
   id: number;
   name: string;
-  place_of_birth?: string;
+  place_of_birth: string;
   @TransformToDate()
-  date_of_birth?: Date;
-  address?: string;
-  domicile?: string;
-  phone_number?: string;
-  profession?: string;
+  date_of_birth: Date;
+  address: string;
+  domicile: string;
+  phone_number: string;
+  profession: string;
+  previous_education: string;
+  intended_program?: string;
   user_id: number;
   user: UserModel;
 

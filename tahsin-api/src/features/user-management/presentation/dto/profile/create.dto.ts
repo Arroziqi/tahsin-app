@@ -35,6 +35,11 @@ export const CreateProfileSchema = z.object({
   profession: z.string({
     required_error: 'Profesi wajib diisi',
   }),
+  previous_education: z.string({
+    required_error: 'Edukasi wajib diisi',
+  }),
+  intended_program: z.string().optional(),
+  user_id: z.number().optional(),
 });
 
 export type CreateProfileDto = z.infer<typeof CreateProfileSchema>;

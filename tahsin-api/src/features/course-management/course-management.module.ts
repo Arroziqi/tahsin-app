@@ -3,6 +3,8 @@ import { AcademicTermModule } from './modules/academic-term.module';
 import { AcademicCalenderModule } from './modules/academic-calender.module';
 import { ClassModule } from './modules/class.module';
 import { AcademicTermPaymentFeeModule } from './modules/academicTerm-paymentFee.module';
+import { RegistrationModule } from './modules/registration.module';
+import { PaymentConfirmationModule } from './modules/payment-confirmation.module';
 
 @Module({
   imports: [
@@ -10,6 +12,8 @@ import { AcademicTermPaymentFeeModule } from './modules/academicTerm-paymentFee.
     AcademicCalenderModule,
     ClassModule,
     AcademicTermPaymentFeeModule,
+    RegistrationModule,
+    PaymentConfirmationModule,
   ],
   controllers: [],
 })

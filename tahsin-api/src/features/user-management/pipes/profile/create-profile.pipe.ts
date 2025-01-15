@@ -1,9 +1,9 @@
 import {
-  Injectable,
-  PipeTransform,
   ArgumentMetadata,
   BadRequestException,
+  Injectable,
   Logger,
+  PipeTransform,
 } from '@nestjs/common';
 import { CreateProfileSchema } from '../../presentation/dto/profile/create.dto';
 import { ProfileModel } from '../../data/models/profile.model';
@@ -22,11 +22,9 @@ export class CreateProfilePipe implements PipeTransform {
       throw new BadRequestException(result.error.errors);
     }
 
-    const profileModel = plainToInstance(ProfileModel, {
+    return plainToInstance(ProfileModel, {
       ...result.data,
       user_id: value.user_id,
     });
-
-    return profileModel;
   }
 }

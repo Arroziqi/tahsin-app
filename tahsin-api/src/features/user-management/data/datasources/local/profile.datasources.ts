@@ -3,9 +3,11 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { ErrorEntity } from 'src/core/domain/entities/error.entity';
 import { DataState } from 'src/core/resources/data.state';
 import { ProfileModel } from '../../models/profile.model';
+import { CreateProfileDto } from '../../../presentation/dto/profile/create.dto';
+import { UpdateProfileDto } from '../../../presentation/dto/profile/update.dto';
 
 export interface ProfileDatasources {
-  create(profile: ProfileModel): Promise<DataState<ProfileModel>>;
+  create(profile: Required<CreateProfileDto>): Promise<DataState<ProfileModel>>;
 
   findById(id: number, includeUser?: boolean): Promise<DataState<ProfileModel>>;
 
@@ -16,7 +18,9 @@ export interface ProfileDatasources {
 
   findAll(includeUser?: boolean): Promise<DataState<ProfileModel[]>>;
 
-  update(profile: Partial<ProfileModel>): Promise<DataState<ProfileModel>>;
+  update(
+    profile: UpdateProfileDto & { id: number },
+  ): Promise<DataState<ProfileModel>>;
 }
 
 @Injectable()
@@ -25,20 +29,13 @@ export class ProfileDatasourcesImpl implements ProfileDatasources {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(profile: ProfileModel): Promise<DataState<ProfileModel>> {
+  async create(
+    profile: Required<CreateProfileDto>,
+  ): Promise<DataState<ProfileModel>> {
     try {
       this.logger.log(`Creating profile for user ${profile.user_id}`);
       const data = await this.prismaService.profile.create({
-        data: {
-          name: profile.name,
-          place_of_birth: profile.place_of_birth,
-          date_of_birth: profile.date_of_birth,
-          address: profile.address,
-          domicile: profile.domicile,
-          phone_number: profile.phone_number,
-          profession: profile.profession,
-          user_id: profile.user_id,
-        },
+        data: profile,
       });
       this.logger.log(
         `Profile created successfully for user ${profile.user_id}`,
@@ -147,16 +144,15 @@ export class ProfileDatasourcesImpl implements ProfileDatasources {
   }
 
   async update(
-    profile: Partial<ProfileModel>,
+    profile: UpdateProfileDto & { id: number },
   ): Promise<DataState<ProfileModel>> {
     try {
       this.logger.log(`Updating profile: ${JSON.stringify(profile)}`);
-      const { id, user_id, user, ...updateData } = profile;
       const data = await this.prismaService.profile.update({
         where: { id: profile.id },
-        data: updateData,
+        data: profile,
       });
-      this.logger.log(`Profile updated successfully for user id: ${user_id}`);
+      this.logger.log(`Profile updated successfully`);
       return {
         data: new ProfileModel(data),
         error: undefined,
