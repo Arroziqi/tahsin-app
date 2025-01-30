@@ -21,6 +21,10 @@ import { UpdateProfileUsecase } from 'src/features/user-management/domain/usecas
 import { RolesGuard } from 'src/features/user-management/guards/roles/roles.guard';
 import { CreateProfilePipe } from 'src/features/user-management/pipes/profile/create-profile.pipe';
 import { UpdateProfilePipe } from 'src/features/user-management/pipes/profile/update-profile.pipe';
+import { AdminBody } from '../../../../../common/decorators/admin-body.decorator';
+import { CreateManyProfilePipe } from '../../../pipes/profile/createMany-profile.pipe';
+import { ProfileEntity } from '../../../domain/entities/profile.entity';
+import { CreateManyProfileUsecase } from '../../../domain/usecases/profile/createMany-profile.usecase';
 
 @Controller('/api/profiles')
 export class ProfileController {
@@ -29,6 +33,7 @@ export class ProfileController {
     private readonly getAllProfileUsecase: GetAllProfileUsecase,
     private readonly updateProfileUsecase: UpdateProfileUsecase,
     private readonly createProfileUsecase: CreateProfileUsecase,
+    private readonly createManyProfileUsecase: CreateManyProfileUsecase,
     private readonly logger: Logger,
   ) {
     this.logger.log('ProfileController initialized');
@@ -51,6 +56,15 @@ export class ProfileController {
     @UserBody(CreateProfilePipe) profile: ProfileModel,
   ): Promise<DataState<ProfileModel>> {
     return await this.createProfileUsecase.execute(profile);
+  }
+
+  @Post('/create-many')
+  @UseGuards(RolesGuard)
+  @Roles(['Admin'])
+  async createManyProfiles(
+    @AdminBody(CreateManyProfilePipe) profiles: ProfileEntity[],
+  ): Promise<DataState<ProfileEntity[]>> {
+    return await this.createManyProfileUsecase.execute(profiles);
   }
 
   @Put('/update')

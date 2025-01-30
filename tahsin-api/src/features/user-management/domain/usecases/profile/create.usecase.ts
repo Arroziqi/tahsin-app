@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UseCase } from 'src/core/domain/usecases/usecase';
 import { DataState } from 'src/core/resources/data.state';
 import { ProfileEntity } from '../../entities/profile.entity';
@@ -14,6 +8,8 @@ import {
   USER_REPO_TOKEN,
 } from 'src/core/const/provider.token';
 import { UserRepository } from '../../repository/user.repository';
+import { UserService } from '../../services/user.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Injectable()
 export class CreateProfileUsecase
@@ -25,29 +21,14 @@ export class CreateProfileUsecase
     @Inject(PROFILE_REPO_TOKEN)
     private readonly profileRepository: ProfileRepository,
     @Inject(USER_REPO_TOKEN) private readonly userRepository: UserRepository,
+    private readonly userService: UserService,
+    private readonly profileService: ProfileService,
   ) {}
 
   async execute(input: ProfileEntity): Promise<DataState<ProfileEntity>> {
-    this.logger.debug(`Checking if user exists with id: ${input.user_id}`);
+    await this.userService.checkExistingUserWithId(input.user_id);
 
-    const existingUser = await this.userRepository.findById(input.user_id);
-
-    if (!existingUser.data) {
-      this.logger.warn(`User with id ${input.user_id} not found`);
-      throw new NotFoundException('User with given ID does not exist');
-    }
-
-    this.logger.debug(
-      `Checking if profile exists for user id: ${input.user_id}`,
-    );
-    const existingProfile = await this.profileRepository.findByUserId(
-      input.user_id,
-    );
-
-    if (existingProfile.data) {
-      this.logger.warn(`Profile already exists for user id ${input.user_id}`);
-      throw new ConflictException('User already has a profile');
-    }
+    await this.profileService.checkDuplicateProfileWithUserId(input.user_id);
 
     this.logger.debug(`Creating profile for user id: ${input.user_id}`);
     const result = await this.profileRepository.create(input);

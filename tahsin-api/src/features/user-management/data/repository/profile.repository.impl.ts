@@ -11,6 +11,12 @@ export class ProfileRepositoryImpl implements ProfileRepository {
     private readonly profileRepository: ProfileRepository,
   ) {}
 
+  async createMany(
+    profiles: ProfileEntity[],
+  ): Promise<DataState<ProfileEntity[]>> {
+    return await this.profileRepository.createMany(profiles);
+  }
+
   create(profile: ProfileEntity): Promise<DataState<ProfileEntity>> {
     return this.profileRepository.create(profile);
   }

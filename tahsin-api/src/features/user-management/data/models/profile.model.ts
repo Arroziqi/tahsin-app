@@ -14,7 +14,10 @@ export class ProfileModel {
   previous_education: string;
   intended_program?: string;
   user_id: number;
-  user: UserModel;
+  admin_id?: number;
+  created_at: Date;
+  updated_at: Date;
+  user?: UserModel;
 
   constructor(data: Partial<ProfileModel>) {
     Object.assign(this, data);

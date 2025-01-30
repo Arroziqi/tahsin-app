@@ -5,9 +5,13 @@ import { DataState } from 'src/core/resources/data.state';
 import { ProfileModel } from '../../models/profile.model';
 import { CreateProfileDto } from '../../../presentation/dto/profile/create.dto';
 import { UpdateProfileDto } from '../../../presentation/dto/profile/update.dto';
+import { CreateManyProfileDto } from '../../../presentation/dto/profile/createMany-profile.dto';
 
 export interface ProfileDatasources {
   create(profile: Required<CreateProfileDto>): Promise<DataState<ProfileModel>>;
+  createMany(
+    profiles: Required<CreateManyProfileDto>[],
+  ): Promise<DataState<ProfileModel[]>>;
 
   findById(id: number, includeUser?: boolean): Promise<DataState<ProfileModel>>;
 
@@ -28,6 +32,25 @@ export class ProfileDatasourcesImpl implements ProfileDatasources {
   private readonly logger = new Logger(ProfileDatasourcesImpl.name);
 
   constructor(private readonly prismaService: PrismaService) {}
+
+  async createMany(
+    profiles: Required<CreateManyProfileDto>[],
+  ): Promise<DataState<ProfileModel[]>> {
+    try {
+      this.logger.log(`Adding profiles to the database`);
+      const data = await this.prismaService.profile.createMany({
+        data: profiles,
+      });
+      this.logger.log(`Profiles added successfully`);
+      return {
+        data: profiles.map((profile) => new ProfileModel(profile)),
+        error: undefined,
+      };
+    } catch (error) {
+      this.logger.error(`Error creating profiles: ${error.message}`);
+      return { data: undefined, error: new ErrorEntity(500, error.message) };
+    }
+  }
 
   async create(
     profile: Required<CreateProfileDto>,

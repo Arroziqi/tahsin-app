@@ -2,6 +2,7 @@ import { DataState } from 'src/core/resources/data.state';
 import { ProfileEntity } from '../entities/profile.entity';
 
 export interface ProfileRepository {
+  createMany(profiles: ProfileEntity[]): Promise<DataState<ProfileEntity[]>>;
   create(profile: ProfileEntity): Promise<DataState<ProfileEntity>>;
 
   findById(
