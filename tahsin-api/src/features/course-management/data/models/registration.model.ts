@@ -14,6 +14,7 @@ export class RegistrationModel {
   user_id: number;
   created_at: Date;
   updated_at: Date;
+  admin_id?: number;
 
   AcademicTerm?: AcademicTermModel;
   User?: UserModel;

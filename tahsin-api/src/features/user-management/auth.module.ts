@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import {
   PROFILE_REPO_TOKEN,
   ROLE_REPO_TOKEN,
@@ -37,6 +37,7 @@ import { UserService } from 'src/features/user-management/domain/services/user.s
 import { ProfileService } from './domain/services/profile.service';
 import { CreateManyProfileUsecase } from './domain/usecases/profile/createMany-profile.usecase';
 
+@Global()
 @Module({
   imports: [
     JwtModule.registerAsync(jwtConfig.asProvider()),
@@ -81,5 +82,6 @@ import { CreateManyProfileUsecase } from './domain/usecases/profile/createMany-p
       useClass: ProfileDatasourcesImpl,
     },
   ],
+  exports: [UserService],
 })
 export class AuthModule {}

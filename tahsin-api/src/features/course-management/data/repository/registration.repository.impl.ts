@@ -12,6 +12,12 @@ export class RegistrationRepositoryImpl implements RegistrationRepository {
     private readonly registrationRepository: RegistrationRepository,
   ) {}
 
+  async createMany(
+    registrations: RegistrationEntity[],
+  ): Promise<DataState<RegistrationEntity[]>> {
+    return await this.registrationRepository.createMany(registrations);
+  }
+
   async findByUserId(
     user_id: number,
   ): Promise<DataState<RegistrationEntity[]>> {

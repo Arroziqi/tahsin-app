@@ -9,6 +9,7 @@ import { PrismaService } from '../../../../common/services/prisma.service';
 import { UpdateRegistrationDto } from '../../presentation/dto/registration/update-registration.dto';
 import { RegistrationModel } from '../models/registration.model';
 import { AddRegistrationDto } from '../../presentation/dto/registration/add-registration.dto';
+import { AddManyRegistrationDto } from '../../presentation/dto/registration/addMany-registration.dto';
 
 export interface RegistrationPrismaDatasources {
   findAll(): Promise<DataState<RegistrationModel[]>>;
@@ -20,6 +21,9 @@ export interface RegistrationPrismaDatasources {
   create(
     registration: Required<AddRegistrationDto>,
   ): Promise<DataState<RegistrationModel>>;
+  createMany(
+    registrations: Required<AddManyRegistrationDto>[],
+  ): Promise<DataState<RegistrationModel[]>>;
   update(
     registration: UpdateRegistrationDto & { id: number },
   ): Promise<DataState<RegistrationModel>>;
@@ -32,11 +36,13 @@ export class RegistrationPrismaDatasourcesImpl
 {
   private readonly logger = new Logger(RegistrationPrismaDatasourcesImpl.name);
   constructor(private readonly prismaService: PrismaService) {}
+
   async findByUserId(user_id: number): Promise<DataState<RegistrationModel[]>> {
     try {
       this.logger.log(`Finding registrations for user id: ${user_id}`);
       const data = await this.prismaService.registration.findMany({
         where: { user_id },
+        include: { User: true, AcademicTerm: true },
       });
 
       if (!data || data.length === 0) {
@@ -131,7 +137,6 @@ export class RegistrationPrismaDatasourcesImpl
   ): Promise<DataState<RegistrationModel>> {
     try {
       this.logger.log(`Creating registration`);
-      console.log(registration);
       const data = await this.prismaService.registration.create({
         data: registration,
       });
@@ -140,6 +145,30 @@ export class RegistrationPrismaDatasourcesImpl
       return new DataSuccess(data);
     } catch (error) {
       this.logger.error(`Error creating registration`);
+      if (error.code === 'P2003') {
+        throw new ErrorEntity(
+          HttpStatus.BAD_REQUEST,
+          `${error.meta.field_name} not found in the database. Please ensure the provided data is valid.`,
+        );
+      }
+      throw new ErrorEntity(error.statusCode, error.message);
+    }
+  }
+
+  async createMany(
+    registrations: Required<AddManyRegistrationDto>[],
+  ): Promise<DataState<RegistrationModel[]>> {
+    try {
+      this.logger.log(`Adding registrations to database`);
+      const data = await this.prismaService.registration.createManyAndReturn({
+        data: registrations,
+        skipDuplicates: true,
+      });
+
+      this.logger.log(`Successfully added registrations`);
+      return new DataSuccess(data);
+    } catch (error) {
+      this.logger.error(`Error adding registrations to database`);
       if (error.code === 'P2003') {
         throw new ErrorEntity(
           HttpStatus.BAD_REQUEST,

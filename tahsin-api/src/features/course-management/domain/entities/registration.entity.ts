@@ -14,6 +14,7 @@ export class RegistrationEntity {
   user_id: number;
   created_at: Date;
   updated_at: Date;
+  admin_id?: number;
 
   AcademicTerm?: AcademicTermEntity;
   User?: UserEntity;

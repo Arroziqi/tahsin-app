@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { USER_REPO_TOKEN } from 'src/core/const/provider.token';
 import { UserRepository } from 'src/features/user-management/domain/repository/user.repository';
 import { ErrorEntity } from 'src/core/domain/entities/error.entity';
@@ -60,7 +60,11 @@ export class UserService {
 
     if (!existingUser.data) {
       this.logger.warn(`User with id ${id} not found`);
-      throw new NotFoundException('User with given ID does not exist');
+      throw new ErrorEntity(
+        404,
+        `User with id ${id} does not exist`,
+        `NotFoundException`,
+      );
     }
   }
 }

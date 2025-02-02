@@ -7,6 +7,7 @@ import { GetAllRegistrationUsecase } from '../domain/usecases/registration/getAl
 import { AddRegistrationUsecase } from '../domain/usecases/registration/add-registration.usecase';
 import { UpdateRegistrationUsecase } from '../domain/usecases/registration/update-registration.usecase';
 import { REGISTRATION_REPO_TOKEN } from '../../../core/const/provider.token';
+import { AddManyRegistrationUsecase } from '../domain/usecases/registration/addMany-registration.usecase';
 
 @Module({
   controllers: [RegistrationController],
@@ -14,6 +15,7 @@ import { REGISTRATION_REPO_TOKEN } from '../../../core/const/provider.token';
     RegistrationService,
     GetAllRegistrationUsecase,
     AddRegistrationUsecase,
+    AddManyRegistrationUsecase,
     UpdateRegistrationUsecase,
     DeleteRegistrationUsecase,
     {

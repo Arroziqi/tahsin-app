@@ -11,6 +11,9 @@ export interface RegistrationRepository {
   create(
     registration: RegistrationEntity,
   ): Promise<DataState<RegistrationEntity>>;
+  createMany(
+    registrations: RegistrationEntity[],
+  ): Promise<DataState<RegistrationEntity[]>>;
   update(
     registration: RegistrationEntity,
   ): Promise<DataState<RegistrationEntity>>;

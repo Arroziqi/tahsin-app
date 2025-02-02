@@ -20,6 +20,9 @@ import { AddRegistrationPipe } from '../../pipes/registration/add-registration.p
 import { UpdateRegistrationPipe } from '../../pipes/registration/update-registration.pipe';
 import { GetAllRegistrationUsecase } from '../../domain/usecases/registration/getAll-registration.usecase';
 import { UserBody } from 'src/common/decorators/user-body.decorator';
+import { AdminBody } from '../../../../common/decorators/admin-body.decorator';
+import { AddManyRegistrationPipe } from '../../pipes/registration/addMany-registration.pipe';
+import { AddManyRegistrationUsecase } from '../../domain/usecases/registration/addMany-registration.usecase';
 
 @Controller('/api/registrations')
 @UseGuards(RolesGuard)
@@ -29,6 +32,7 @@ export class RegistrationController {
   constructor(
     private readonly getAllRegistrationsUsecase: GetAllRegistrationUsecase,
     private readonly addRegistrationUsecase: AddRegistrationUsecase,
+    private readonly addManyRegistrationUsecase: AddManyRegistrationUsecase,
     private readonly updateRegistrationUsecase: UpdateRegistrationUsecase,
     private readonly deleteRegistrationUsecase: DeleteRegistrationUsecase,
   ) {}
@@ -66,6 +70,15 @@ export class RegistrationController {
       });
       throw error;
     }
+  }
+
+  @Post('/create-many')
+  @UseGuards(RolesGuard)
+  @Roles(['Admin'])
+  async createManyRegistrations(
+    @AdminBody(AddManyRegistrationPipe) registrations: RegistrationEntity[],
+  ): Promise<DataState<RegistrationEntity[]>> {
+    return await this.addManyRegistrationUsecase.execute(registrations);
   }
 
   @Patch(':id')

@@ -3,6 +3,7 @@ import { REGISTRATION_REPO_TOKEN } from '../../../../core/const/provider.token';
 import { RegistrationRepository } from '../repositories/registration.repository';
 import { RegistrationEntity } from '../entities/registration.entity';
 import { DataState } from 'src/core/resources/data.state';
+import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 
 @Injectable()
 export class RegistrationService {
@@ -26,11 +27,16 @@ export class RegistrationService {
         (reg) => reg.academicTerm_id === academicTerm_id,
       )
     ) {
+      const userNames = existingRegistration.data
+        .map((reg) => reg.User.username)
+        .join(', '); // Assuming userName is part of the registration data
       this.logger.warn(
-        `Registration already exists for this user and academic term...`,
+        `Registration already exists for user(s) ${userNames} in this academic term...`,
       );
-      throw new ConflictException(
-        'Registration already exists for this user and academic term.',
+      throw new ErrorEntity(
+        409,
+        `Registration already exists for user(s) ${userNames} in this academic term.`,
+        `Conflict Exception`,
       );
     }
   }
