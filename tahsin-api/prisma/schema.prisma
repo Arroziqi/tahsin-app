@@ -282,11 +282,12 @@ model Registration {
 model PaymentConfirmation {
   id                       Int                       @id @default(autoincrement())
   type                     FeeType
-  payment_receipt_img_path String                    @db.VarChar(255)
+  payment_receipt_img_path String?                   @db.VarChar(255)
   amount                   Int
-  transaction_number       String                    @unique
+  transaction_number       String?                   @unique
   transaction_date         DateTime
   status                   PaymentConfirmationStatus @default(PENDING)
+  notes                    String?                   @db.VarChar(500)
   created_at               DateTime                  @default(now())
   updated_at               DateTime                  @updatedAt
   student_id               Int

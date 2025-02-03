@@ -13,6 +13,9 @@ export interface PaymentConfirmationRepository {
   create(
     paymentConfirmation: PaymentConfirmationEntity,
   ): Promise<DataState<PaymentConfirmationEntity>>;
+  createMany(
+    paymentConfirmations: PaymentConfirmationEntity[],
+  ): Promise<DataState<PaymentConfirmationEntity[]>>;
   update(
     paymentConfirmation: PaymentConfirmationEntity,
   ): Promise<DataState<PaymentConfirmationEntity>>;

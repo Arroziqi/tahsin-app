@@ -9,6 +9,7 @@ import { PrismaService } from '../../../../common/services/prisma.service';
 import { UpdatePaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/update-paymentConfirmation.dto';
 import { PaymentConfirmationModel } from '../models/payment-confirmation.model';
 import { AddPaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/add-paymentConfirmation.dto';
+import { AddManyPaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/addMany-paymentConfirmation.dto';
 
 export interface PaymentConfirmationPrismaDatasources {
   findAll(): Promise<DataState<PaymentConfirmationModel[]>>;
@@ -22,6 +23,9 @@ export interface PaymentConfirmationPrismaDatasources {
   create(
     paymentConfirmation: Required<AddPaymentConfirmationDto>,
   ): Promise<DataState<PaymentConfirmationModel>>;
+  createMany(
+    paymentConfirmations: Required<AddManyPaymentConfirmationDto>[],
+  ): Promise<DataState<PaymentConfirmationModel[]>>;
   update(
     paymentConfirmation: UpdatePaymentConfirmationDto & { id: number },
   ): Promise<DataState<PaymentConfirmationModel>>;
@@ -160,6 +164,34 @@ export class PaymentConfirmationPrismaDatasourcesImpl
       return new DataSuccess(data);
     } catch (error) {
       this.logger.error(`Error creating payment confirmation`);
+      if (error.code === 'P2003') {
+        throw new ErrorEntity(
+          HttpStatus.BAD_REQUEST,
+          `${error.meta.field_name} not found in the database. Please ensure the provided data is valid.`,
+        );
+      }
+      throw new ErrorEntity(error.statusCode, error.message);
+    }
+  }
+
+  async createMany(
+    paymentConfirmations: Required<AddManyPaymentConfirmationDto>[],
+  ): Promise<DataState<PaymentConfirmationModel[]>> {
+    try {
+      this.logger.log(`Adding payment confirmations to database`);
+      const data =
+        await this.prismaService.paymentConfirmation.createManyAndReturn({
+          data: paymentConfirmations,
+          skipDuplicates: true,
+        });
+
+      this.logger.log(`Successfully added payment confirmations`);
+      return new DataSuccess(data);
+    } catch (error) {
+      this.logger.error(
+        `Error adding payment confirmations to database: ${error.message}`,
+        error,
+      );
       if (error.code === 'P2003') {
         throw new ErrorEntity(
           HttpStatus.BAD_REQUEST,

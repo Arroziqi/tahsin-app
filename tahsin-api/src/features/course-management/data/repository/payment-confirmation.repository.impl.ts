@@ -42,6 +42,14 @@ export class PaymentConfirmationRepositoryImpl
     return await this.paymentConfirmationRepository.create(paymentConfirmation);
   }
 
+  async createMany(
+    paymentConfirmations: PaymentConfirmationEntity[],
+  ): Promise<DataState<PaymentConfirmationEntity[]>> {
+    return await this.paymentConfirmationRepository.createMany(
+      paymentConfirmations,
+    );
+  }
+
   async update(
     paymentConfirmation: PaymentConfirmationEntity,
   ): Promise<DataState<PaymentConfirmationEntity>> {

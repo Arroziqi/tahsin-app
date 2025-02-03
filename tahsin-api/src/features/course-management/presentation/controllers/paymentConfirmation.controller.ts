@@ -20,6 +20,11 @@ import { UpdatePaymentConfirmationPipe } from '../../pipes/payment-confirmation/
 import { GetAllPaymentConfirmationUsecase } from '../../domain/usecases/payment-confirmation/getAll-paymentConfirmation.usecase';
 import { UserBody } from 'src/common/decorators/user-body.decorator';
 import { PaymentConfirmationEntity } from '../../domain/entities/payment-confirmation.entity';
+import { AdminBody } from '../../../../common/decorators/admin-body.decorator';
+import { AddManyPaymentConfirmationPipe } from '../../pipes/payment-confirmation/addMany-paymentConfirmation.pipe';
+import { AddManyPaymentConfirmationUsecase } from '../../domain/usecases/payment-confirmation/addMany-paymentConfirmation.usecase';
+import { UpdateStatusPaymentConfirmationPipe } from '../../pipes/payment-confirmation/updateStatus-paymentConfirmation.pipe';
+import { GetByStudentIdPaymentConfirmationUsecase } from '../../domain/usecases/payment-confirmation/getByStudentId-paymentConfirmation.usecase';
 
 @Controller('/api/payment-confirmations')
 @UseGuards(RolesGuard)
@@ -28,7 +33,9 @@ export class PaymentConfirmationController {
   private readonly logger = new Logger(PaymentConfirmationController.name);
   constructor(
     private readonly getAllPaymentConfirmationsUsecase: GetAllPaymentConfirmationUsecase,
+    private readonly getByStudentIdPaymentConfirmationUsecase: GetByStudentIdPaymentConfirmationUsecase,
     private readonly addPaymentConfirmationUsecase: AddPaymentConfirmationUsecase,
+    private readonly addManyPaymentConfirmationUsecase: AddManyPaymentConfirmationUsecase,
     private readonly updatePaymentConfirmationUsecase: UpdatePaymentConfirmationUsecase,
     private readonly deletePaymentConfirmationUsecase: DeletePaymentConfirmationUsecase,
   ) {}
@@ -43,6 +50,48 @@ export class PaymentConfirmationController {
       const result = await this.getAllPaymentConfirmationsUsecase.execute();
 
       this.logger.log('Successfully retrieved all payment confirmations');
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to get payment confirmations', {
+        error: error.message,
+      });
+      throw error;
+    }
+  }
+
+  @Get('/student/:studentId')
+  @Roles(['Admin'])
+  async getByStudentIdPaymentConfirmations(
+    @Param('studentId', ParseIntPipe) studentId: number,
+  ): Promise<DataState<PaymentConfirmationEntity[]>> {
+    try {
+      this.logger.debug('Getting payment confirmations');
+      const result =
+        await this.getByStudentIdPaymentConfirmationUsecase.execute(studentId);
+
+      this.logger.log('Successfully retrieved payment confirmations');
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to get payment confirmations', {
+        error: error.message,
+      });
+      throw error;
+    }
+  }
+
+  @Get('/student')
+  @Roles(['Student'])
+  async getCurrentUserPaymentConfirmations(
+    @UserBody() studentId: { user_id: number },
+  ): Promise<DataState<PaymentConfirmationEntity[]>> {
+    try {
+      this.logger.debug('Getting payment confirmations');
+      const result =
+        await this.getByStudentIdPaymentConfirmationUsecase.execute(
+          studentId.user_id,
+        );
+
+      this.logger.log('Successfully retrieved payment confirmations');
       return result;
     } catch (error) {
       this.logger.error('Failed to get payment confirmations', {
@@ -70,6 +119,16 @@ export class PaymentConfirmationController {
     }
   }
 
+  @Post('/create-many')
+  @UseGuards(RolesGuard)
+  @Roles(['Admin'])
+  async createManyPaymentConfirmations(
+    @AdminBody(AddManyPaymentConfirmationPipe)
+    registrations: PaymentConfirmationEntity[],
+  ): Promise<DataState<PaymentConfirmationEntity[]>> {
+    return await this.addManyPaymentConfirmationUsecase.execute(registrations);
+  }
+
   @Patch(':id')
   async updatePaymentConfirmation(
     @Param('id', ParseIntPipe) id: number,
@@ -86,6 +145,34 @@ export class PaymentConfirmationController {
       return result;
     } catch (error) {
       this.logger.error('Failed to update payment confirmation', {
+        error: error.message,
+      });
+      throw error;
+    }
+  }
+
+  @Patch('/update-status/:id')
+  @UseGuards(RolesGuard)
+  @Roles(['Admin'])
+  async updateStatusPaymentConfirmation(
+    @Param('id', ParseIntPipe) id: number,
+    @AdminBody(UpdateStatusPaymentConfirmationPipe)
+    request: PaymentConfirmationEntity,
+  ): Promise<DataState<PaymentConfirmationEntity>> {
+    try {
+      this.logger.debug('Updating status payment confirmation', {
+        id,
+        request,
+      });
+      const result = await this.updatePaymentConfirmationUsecase.execute({
+        id,
+        ...request,
+      });
+
+      this.logger.log('Successfully updated status payment confirmation');
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to update status payment confirmation', {
         error: error.message,
       });
       throw error;
