@@ -1,6 +1,7 @@
 import { PaymentConfirmationStatusEnum } from 'src/core/types/enum/paymentConfirmation-status.enum';
-import { UserEntity } from '../../../user-management/domain/entities/user.entity';
 import { FeeTypesEnum } from 'src/core/types/enum/fee-types.enum';
+import { StudentEntity } from '../../../user-management/domain/entities/student.entity';
+import { AdminEntity } from '../../../user-management/domain/entities/admin.entity';
 
 export class PaymentConfirmationEntity {
   id: number;
@@ -16,7 +17,8 @@ export class PaymentConfirmationEntity {
   student_id: number;
   admin_id?: number;
 
-  Student?: UserEntity;
+  Student?: StudentEntity;
+  Admin?: AdminEntity;
 
   constructor(data: Partial<PaymentConfirmationEntity>) {
     Object.assign(this, data);

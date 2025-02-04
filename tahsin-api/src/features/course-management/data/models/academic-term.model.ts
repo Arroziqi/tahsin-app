@@ -1,4 +1,4 @@
-import { UserModel } from '../../../user-management/data/models/user.model';
+import { AdminModel } from '../../../user-management/data/models/admin.model';
 
 export class AcademicTermModel {
   id: number;
@@ -9,9 +9,9 @@ export class AcademicTermModel {
   is_active: boolean;
   created_at: Date;
   updated_at: Date;
-  admin_id: number;
+  admin_id?: number;
 
-  Admin?: UserModel;
+  Admin?: AdminModel;
 
   constructor(data: Partial<AcademicTermModel>) {
     Object.assign(this, data);

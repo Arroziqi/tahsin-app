@@ -1,4 +1,4 @@
-import { UserEntity } from '../../../user-management/domain/entities/user.entity';
+import { AdminEntity } from '../../../user-management/domain/entities/admin.entity';
 
 export class AcademicTermEntity {
   id: number;
@@ -9,9 +9,9 @@ export class AcademicTermEntity {
   is_active: boolean;
   created_at: Date;
   updated_at: Date;
-  admin_id: number;
+  admin_id?: number;
 
-  Admin?: UserEntity;
+  Admin?: AdminEntity;
 
   constructor(data: Partial<AcademicTermEntity>) {
     Object.assign(this, data);

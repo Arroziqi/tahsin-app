@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import {
   BANK_ACCOUNT_REPO_TOKEN,
   COMPONENT_REPO_TOKEN,
@@ -59,7 +59,9 @@ import { UpdateScheduleUsecase } from './domain/usecases/schedule/update-schedul
 import { DeleteScheduleUsecase } from './domain/usecases/schedule/delete-schedule.usecase';
 import { GetAllScheduleUsecase } from './domain/usecases/schedule/getAll-schedule';
 import { ScheduleController } from './presentation/controllers/schedule/schedule.controller';
+import { LevelService } from './domain/services/level.service';
 
+@Global()
 @Module({
   controllers: [
     LevelController,
@@ -123,6 +125,7 @@ import { ScheduleController } from './presentation/controllers/schedule/schedule
     // service
     TimeService,
     ScheduleService,
+    LevelService,
 
     // Repository
     {
@@ -158,5 +161,6 @@ import { ScheduleController } from './presentation/controllers/schedule/schedule
       useClass: SchedulePrismaDatasourcesImpl,
     },
   ],
+  exports: [LevelService],
 })
 export class MasterDataModule {}

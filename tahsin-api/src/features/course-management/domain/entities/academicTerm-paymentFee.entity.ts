@@ -1,5 +1,5 @@
-import { UserEntity } from '../../../user-management/domain/entities/user.entity';
 import { FeeTypesEnum } from '../../../../core/types/enum/fee-types.enum';
+import { AdminEntity } from '../../../user-management/domain/entities/admin.entity';
 
 export class AcademicTermPaymentFeeEntity {
   id: number;
@@ -10,9 +10,9 @@ export class AcademicTermPaymentFeeEntity {
   description?: string;
   created_at: Date;
   updated_at: Date;
-  admin_id: number;
+  admin_id?: number;
 
-  Admin?: UserEntity;
+  Admin?: AdminEntity;
 
   constructor(data: Partial<AcademicTermPaymentFeeEntity>) {
     Object.assign(this, data);

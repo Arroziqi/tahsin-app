@@ -1,5 +1,5 @@
-import { UserModel } from '../../../user-management/data/models/user.model';
 import { LevelModel } from '../../../master-data/data/models/level.model';
+import { TeacherModel } from '../../../user-management/data/models/teacher.model';
 
 export class ClassModel {
   id: number;
@@ -7,7 +7,7 @@ export class ClassModel {
   teacher_id: number;
   level_id: number;
 
-  Teacher?: UserModel;
+  Teacher?: TeacherModel;
   Level?: LevelModel;
 
   constructor(data: Partial<ClassModel>) {

@@ -23,7 +23,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(teacher: TeacherModel): Promise<DataState<TeacherModel>> {
-    const { user, classes, id, ...teacherData } = teacher;
+    const { User, Class, id, ...teacherData } = teacher;
     try {
       this.logger.log(`Creating teacher`);
       const data = await this.prismaService.teacher.create({
@@ -46,7 +46,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
       const data = await this.prismaService.teacher.findUnique({
         where: { id },
         include: {
-          user: true,
+          User: true,
         },
       });
 
@@ -62,7 +62,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
       return {
         data: new TeacherModel({
           ...data,
-          user: true ? data.user : undefined,
+          User: true ? data.User : undefined,
         }),
         error: undefined,
       };
@@ -77,7 +77,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
       this.logger.log(`Finding teacher by user id: ${userId}`);
       const data = await this.prismaService.teacher.findUnique({
         where: { user_id: userId },
-        include: { user: true },
+        include: { User: true },
       });
 
       if (!data) {
@@ -92,7 +92,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
       return {
         data: new TeacherModel({
           ...data,
-          user: true ? data.user : undefined,
+          User: true ? data.User : undefined,
         }),
         error: undefined,
       };
@@ -107,7 +107,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
       this.logger.log('Finding all teachers');
       const data = await this.prismaService.teacher.findMany({
         include: {
-          user: true,
+          User: true,
         },
       });
       this.logger.log(`Found teachers: ${JSON.stringify(data)}`);
@@ -116,7 +116,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
           (teacher) =>
             new TeacherModel({
               ...teacher,
-              user: true ? teacher.user : undefined,
+              User: true ? teacher.User : undefined,
             }),
         ),
         error: undefined,
@@ -132,7 +132,7 @@ export class TeacherDatasourcesImpl implements TeacherDatasources {
   ): Promise<DataState<TeacherModel>> {
     try {
       this.logger.log(`Updating teacher: ${JSON.stringify(teacher)}`);
-      const { user, classes, id, ...teacherData } = teacher;
+      const { User, Class, id, ...teacherData } = teacher;
       const data = await this.prismaService.teacher.update({
         where: { id: teacher.id },
         data: teacherData,

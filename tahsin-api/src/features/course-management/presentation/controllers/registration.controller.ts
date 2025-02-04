@@ -23,6 +23,8 @@ import { UserBody } from 'src/common/decorators/user-body.decorator';
 import { AdminBody } from '../../../../common/decorators/admin-body.decorator';
 import { AddManyRegistrationPipe } from '../../pipes/registration/addMany-registration.pipe';
 import { AddManyRegistrationUsecase } from '../../domain/usecases/registration/addMany-registration.usecase';
+import { UpdateLevelRegistrationPipe } from '../../pipes/registration/updateLevel-registration.pipe';
+import { UpdateLevelRegistrationUsecase } from '../../domain/usecases/registration/updateLevel-registration.usecase';
 
 @Controller('/api/registrations')
 @UseGuards(RolesGuard)
@@ -34,6 +36,7 @@ export class RegistrationController {
     private readonly addRegistrationUsecase: AddRegistrationUsecase,
     private readonly addManyRegistrationUsecase: AddManyRegistrationUsecase,
     private readonly updateRegistrationUsecase: UpdateRegistrationUsecase,
+    private readonly updateLevelRegistrationUsecase: UpdateLevelRegistrationUsecase,
     private readonly deleteRegistrationUsecase: DeleteRegistrationUsecase,
   ) {}
 
@@ -73,7 +76,6 @@ export class RegistrationController {
   }
 
   @Post('/create-many')
-  @UseGuards(RolesGuard)
   @Roles(['Admin'])
   async createManyRegistrations(
     @AdminBody(AddManyRegistrationPipe) registrations: RegistrationEntity[],
@@ -97,6 +99,29 @@ export class RegistrationController {
       return result;
     } catch (error) {
       this.logger.error('Failed to update registration', {
+        error: error.message,
+      });
+      throw error;
+    }
+  }
+
+  @Patch('/update-level/:id')
+  @Roles(['Admin'])
+  async updateLevelRegistration(
+    @Param('id', ParseIntPipe) id: number,
+    @AdminBody(UpdateLevelRegistrationPipe) request: RegistrationEntity,
+  ): Promise<DataState<RegistrationEntity>> {
+    try {
+      this.logger.debug('Updating level registration', { id, request });
+      const result = await this.updateLevelRegistrationUsecase.execute({
+        id,
+        ...request,
+      });
+
+      this.logger.log('Successfully updated level registration');
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to update level registration', {
         error: error.message,
       });
       throw error;

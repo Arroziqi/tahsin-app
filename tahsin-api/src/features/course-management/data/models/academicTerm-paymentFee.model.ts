@@ -1,5 +1,5 @@
-import { UserModel } from '../../../user-management/data/models/user.model';
 import { FeeTypesEnum } from '../../../../core/types/enum/fee-types.enum';
+import { AdminModel } from '../../../user-management/data/models/admin.model';
 
 export class AcademicTermPaymentFeeModel {
   id: number;
@@ -10,9 +10,9 @@ export class AcademicTermPaymentFeeModel {
   description?: string;
   created_at: Date;
   updated_at: Date;
-  admin_id: number;
+  admin_id?: number;
 
-  Admin?: UserModel;
+  Admin?: AdminModel;
 
   constructor(data: Partial<AcademicTermPaymentFeeModel>) {
     Object.assign(this, data);

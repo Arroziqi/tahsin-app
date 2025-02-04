@@ -187,6 +187,10 @@ export class RegistrationPrismaDatasourcesImpl
       const data = await this.prismaService.registration.update({
         where: { id: registration.id },
         data: registration,
+        include: {
+          Level: true,
+          User: true,
+        },
       });
 
       this.logger.log(`Successfully updated registration`);

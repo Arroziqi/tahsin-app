@@ -6,8 +6,8 @@ export class TeacherEntity {
   user_id: number;
   status: 'ONLINE' | 'OFFLINE' | 'HYBRID';
 
-  classes: ClassEntity[];
-  user: UserEntity;
+  Class?: ClassEntity[];
+  User?: UserEntity;
 
   constructor(data: Partial<TeacherEntity>) {
     Object.assign(this, data);

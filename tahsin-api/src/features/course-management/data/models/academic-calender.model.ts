@@ -1,6 +1,6 @@
 import { EventModel } from 'src/features/master-data/data/models/event.model';
 import { AcademicTermModel } from './academic-term.model';
-import { UserModel } from '../../../user-management/data/models/user.model';
+import { AdminModel } from '../../../user-management/data/models/admin.model';
 
 export class AcademicCalenderModel {
   id: number;
@@ -10,10 +10,10 @@ export class AcademicCalenderModel {
   end_date: Date;
   created_at: Date;
   updated_at: Date;
-  admin_id: number;
+  admin_id?: number;
   is_active: boolean;
 
-  Admin?: UserModel;
+  Admin?: AdminModel;
   AcademicTerm?: AcademicTermModel;
   Event?: EventModel;
 

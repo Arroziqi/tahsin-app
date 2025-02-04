@@ -1,5 +1,5 @@
-import { UserEntity } from '../../../user-management/domain/entities/user.entity';
 import { LevelEntity } from '../../../master-data/domain/entities/level.entity';
+import { TeacherEntity } from '../../../user-management/domain/entities/teacher.entity';
 
 export class ClassEntity {
   id: number;
@@ -7,7 +7,7 @@ export class ClassEntity {
   teacher_id: number;
   level_id: number;
 
-  Teacher?: UserEntity;
+  Teacher?: TeacherEntity;
   Level?: LevelEntity;
 
   constructor(data: Partial<ClassEntity>) {

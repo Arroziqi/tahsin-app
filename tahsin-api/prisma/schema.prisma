@@ -67,6 +67,18 @@ enum PaymentConfirmationStatus {
   REJECTED
 }
 
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  DROPOUT
+  GRADUATED
+}
+
+enum AdminStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model Profile {
   id                 Int      @id @default(autoincrement())
   name               String   @db.VarChar(255)
@@ -94,25 +106,22 @@ model Role {
 }
 
 model User {
-  id                     Int                      @id @default(autoincrement())
-  email                  String                   @unique(map: "users_email_unique") @db.VarChar(255)
-  password               String                   @db.VarChar(255)
-  username               String                   @unique @db.VarChar(255)
-  hashedRefreshToken     String?                  @db.VarChar(255)
-  role_id                Int                      @default(2)
-  created_at             DateTime                 @default(now())
-  updated_at             DateTime                 @updatedAt
-  admin_id               Int?
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique(map: "users_email_unique") @db.VarChar(255)
+  password           String         @db.VarChar(255)
+  username           String         @unique @db.VarChar(255)
+  hashedRefreshToken String?        @db.VarChar(255)
+  role_id            Int            @default(2)
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+  admin_id           Int?
   // registrations      Registration[]
-  profile                Profile?
-  role                   Role                     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
-  Teacher                Teacher?
-  Class                  Class[]
-  AcademicTerms          AcademicTerm[]
-  AcademiCalenders       AcademicCalender[]
-  AcademicTermPaymentFee AcademicTermPaymentFee[]
-  Registration           Registration[]
-  PaymentConfirmation    PaymentConfirmation[]
+  profile            Profile?
+  role               Role           @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_foreign")
+  Teacher            Teacher?
+  Student            Student?
+  Admin              Admin?
+  Registration       Registration[]
 }
 
 model Event {
@@ -125,12 +134,13 @@ model Event {
 }
 
 model Level {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique(map: "levels_name_unique") @db.VarChar(255)
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  classes    Class[]
+  id           Int            @id @default(autoincrement())
+  name         String         @unique(map: "levels_name_unique") @db.VarChar(255)
+  is_active    Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  classes      Class[]
+  Registration Registration[]
 }
 
 model Teacher {
@@ -139,7 +149,35 @@ model Teacher {
   status     TeacherStatus @default(OFFLINE)
   created_at DateTime      @default(now())
   updated_at DateTime      @updatedAt
-  user       User          @relation(fields: [user_id], references: [id])
+  User       User?         @relation(fields: [user_id], references: [id])
+  Class      Class[]
+}
+
+model Student {
+  id                  Int                   @id @default(autoincrement())
+  user_id             Int                   @unique
+  status              StudentStatus         @default(INACTIVE)
+  admin_id            Int?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  User                User?                 @relation(fields: [user_id], references: [id])
+  Invoices            Invoices[]
+  PaymentConfirmation PaymentConfirmation[]
+}
+
+model Admin {
+  id                     Int                      @id @default(autoincrement())
+  user_id                Int                      @unique
+  status                 AdminStatus              @default(ACTIVE)
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
+  User                   User?                    @relation(fields: [user_id], references: [id])
+  AcademicTerm           AcademicTerm[]
+  AcademicCalender       AcademicCalender[]
+  AcademicTermPaymentFee AcademicTermPaymentFee[]
+  PaymentConfirmation    PaymentConfirmation[]
+  Registration           Registration[]
+  Invoices               Invoices[]
 }
 
 model Component {
@@ -211,9 +249,9 @@ model AcademicTerm {
   is_active   Boolean  @default(true)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  admin_id    Int      @default(1)
+  admin_id    Int?
 
-  Admin                  User?                    @relation(fields: [admin_id], references: [id])
+  Admin                  Admin?                   @relation(fields: [admin_id], references: [id])
   academicCalenders      AcademicCalender[]
   AcademicTermPaymentFee AcademicTermPaymentFee[]
   Registration           Registration[]
@@ -227,10 +265,10 @@ model AcademicCalender {
   end_date        DateTime
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
-  admin_id        Int      @default(1)
+  admin_id        Int?
   is_active       Boolean  @default(true)
 
-  Admin        User?         @relation(fields: [admin_id], references: [id])
+  Admin        Admin?        @relation(fields: [admin_id], references: [id])
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
   Event        Event?        @relation(fields: [event_id], references: [id])
 }
@@ -242,7 +280,7 @@ model Class {
   level_id   Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  Teacher    User?    @relation(fields: [teacher_id], references: [id])
+  Teacher    Teacher? @relation(fields: [teacher_id], references: [id])
   Level      Level?   @relation(fields: [level_id], references: [id])
 }
 
@@ -255,11 +293,12 @@ model AcademicTermPaymentFee {
   due_date        DateTime
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
-  admin_id        Int      @default(1)
+  admin_id        Int?
 
-  Admin User? @relation(fields: [admin_id], references: [id])
+  Admin Admin? @relation(fields: [admin_id], references: [id])
 
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
+  Invoices     Invoices[]
 }
 
 model Registration {
@@ -271,12 +310,16 @@ model Registration {
   user_id            Int
   audio_path         String?         @db.VarChar(255)
   available_dateTime DateTime?
+  level_id           Int?
   created_at         DateTime        @default(now())
   updated_at         DateTime        @updatedAt
   admin_id           Int?
 
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
   User         User?         @relation(fields: [user_id], references: [id])
+  Level        Level?        @relation(fields: [level_id], references: [id])
+  Admin        Admin?        @relation(fields: [admin_id], references: [id])
+  Invoices     Invoices[]
 }
 
 model PaymentConfirmation {
@@ -293,5 +336,23 @@ model PaymentConfirmation {
   student_id               Int
   admin_id                 Int?
 
-  Student User? @relation(fields: [student_id], references: [id])
+  Student Student? @relation(fields: [student_id], references: [id])
+  Admin   Admin?   @relation(fields: [admin_id], references: [id])
+}
+
+model Invoices {
+  id                        Int           @id @default(autoincrement())
+  academicTermPaymentFee_id Int
+  registration_id           Int?
+  outstandingBalance        Int?
+  student_id                Int
+  status                    PaymentStatus @default(UNPAID)
+  created_at                DateTime      @default(now())
+  updated_at                DateTime      @updatedAt
+  admin_id                  Int?
+
+  AcademicTermPaymentFee AcademicTermPaymentFee? @relation(fields: [academicTermPaymentFee_id], references: [id])
+  Registration           Registration?           @relation(fields: [registration_id], references: [id])
+  Student                Student?                @relation(fields: [student_id], references: [id])
+  Admin                  Admin?                  @relation(fields: [admin_id], references: [id])
 }

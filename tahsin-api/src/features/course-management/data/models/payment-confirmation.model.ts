@@ -1,6 +1,7 @@
 import { PaymentConfirmationStatusEnum } from 'src/core/types/enum/paymentConfirmation-status.enum';
-import { UserModel } from '../../../user-management/data/models/user.model';
 import { FeeTypesEnum } from 'src/core/types/enum/fee-types.enum';
+import { StudentModel } from '../../../user-management/data/models/student.model';
+import { AdminModel } from '../../../user-management/data/models/admin.model';
 
 export class PaymentConfirmationModel {
   id: number;
@@ -16,7 +17,8 @@ export class PaymentConfirmationModel {
   student_id: number;
   admin_id?: number;
 
-  Student?: UserModel;
+  Student?: StudentModel;
+  Admin?: AdminModel;
 
   constructor(data: Partial<PaymentConfirmationModel>) {
     Object.assign(this, data);
