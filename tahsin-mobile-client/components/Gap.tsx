@@ -1,5 +1,5 @@
-import React from "react";
-import { DimensionValue, StyleSheet, View } from "react-native";
+import React from 'react';
+import { DimensionValue, View } from 'react-native';
 
 interface GapProps {
   width?: DimensionValue;

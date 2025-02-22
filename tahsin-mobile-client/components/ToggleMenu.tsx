@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 function ToggleMenu() {
   return (

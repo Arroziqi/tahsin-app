@@ -1,19 +1,9 @@
-import React, { useRef, useState } from "react";
-import {
-  Animated,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  ViewToken,
-} from "react-native";
-import images from "@/constants/images";
-import OnboardingItem, {
-  ContentItem,
-} from "@/components/ui/onboarding/onboarding-item";
-import OnboardingIndicator from "@/components/ui/onboarding/onboarding-indicator";
-import OnboardingButton from "@/components/ui/onboarding/onboarding-button";
-import { development } from "@/libs/core/config";
+import React, { useRef, useState } from 'react';
+import { Animated, FlatList, SafeAreaView, StyleSheet, View, ViewToken } from 'react-native';
+import images from '@/constants/images';
+import OnboardingItem, { ContentItem } from '@/components/ui/onboarding/onboarding-item';
+import OnboardingIndicator from '@/components/ui/onboarding/onboarding-indicator';
+import OnboardingButton from '@/components/ui/onboarding/onboarding-button';
 
 const CONTENT: ContentItem[] = [
   {

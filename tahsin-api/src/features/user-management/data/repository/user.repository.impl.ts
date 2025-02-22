@@ -6,7 +6,7 @@ import { USER_REPO_TOKEN } from 'src/core/const/provider.token';
 
 @Injectable()
 export abstract class UserRepositoryImpl implements UserRepository {
-  constructor(
+  protected constructor(
     @Inject(USER_REPO_TOKEN) private readonly userRepository: UserRepository,
   ) {}
 

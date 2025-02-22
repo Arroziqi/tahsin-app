@@ -1,11 +1,12 @@
-import SecondaryButton from "@/components/buttons/SecondaryButton";
-import Card, { CardProps } from "@/components/card/Card";
-import Gap from "@/components/Gap";
-import Header from "@/components/header/Header";
-import { Colors } from "@/constants/Colors";
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import SecondaryButton from '@/components/buttons/SecondaryButton';
+import Card, { CardProps } from '@/components/card/Card';
+import Gap from '@/components/Gap';
+import Header from '@/components/header/Header';
+import { Colors } from '@/constants/Colors';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 const HomeScreen = () => {
   const model: CardProps[] = [
@@ -52,7 +53,7 @@ const HomeScreen = () => {
               style={{ borderRadius: 12, marginVertical: 10 }}
             />
           ))}
-          <SecondaryButton text={"Apply"} style={styles.buttonApply} />
+          <SecondaryButton onPress={()=> router.push("/(auth)/sign-up")} text={"Apply"} style={styles.buttonApply} />
         </View>
         <Gap height={20} />
       </ScrollView>
