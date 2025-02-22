@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import React from "react";
 import {
   DimensionValue,
@@ -9,22 +10,22 @@ import {
   ViewStyle,
 } from "react-native";
 
-type PrimaryButtonProps = TouchableOpacityProps & {
+type SecondaryButtonProps = TouchableOpacityProps & {
   text: string;
-  color: string;
-  backgroundColor: string;
+  color?: string;
+  backgroundColor?: string;
   width?: DimensionValue;
   style?: StyleProp<ViewStyle>;
 };
 
-const PrimaryButton = ({
+const SecondaryButton = ({
   text,
-  backgroundColor,
-  color,
-  width = "80%",
+  backgroundColor = Colors.primary.two,
+  color = "white",
+  width,
   style,
   ...rest
-}: PrimaryButtonProps) => {
+}: SecondaryButtonProps) => {
   return (
     <TouchableOpacity
       style={[style, styles.button, { backgroundColor, width: width }]}
@@ -41,11 +42,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: "semibold",
-    fontSize: 18,
-    lineHeight: 27,
+    fontSize: 14,
     textAlign: "center",
-    paddingVertical: 17,
   },
 });
 
-export default PrimaryButton;
+export default SecondaryButton;

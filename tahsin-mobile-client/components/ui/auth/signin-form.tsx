@@ -11,8 +11,9 @@ import {
   SigninReqUserSchema,
 } from "@/libs/features/auth/domain/entities/signin-req-user.entity";
 import { SendReqSigninUserUsecase } from "@/libs/features/auth/domain/usecases/send-req-signin-user.usecase";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import InputWithValidation from "@/components/form/input-with-validation";
+import { development } from "@/libs/core/config";
 
 type FormField = {
   label: string;
@@ -48,7 +49,7 @@ const SigninForm = () => {
   });
 
   const onSubmit: SubmitHandler<SigninReqUserEntity> = async (
-    data: SigninReqUserEntity,
+    data: SigninReqUserEntity
   ) => {
     console.log("Payload:", data);
 
@@ -63,7 +64,7 @@ const SigninForm = () => {
       setError(
         response.errors.message
           ? response.errors.message
-          : response.errors.error,
+          : response.errors.error
       );
     }
   };
@@ -98,6 +99,18 @@ const SigninForm = () => {
         onPress={handleSubmit(onSubmit)}
         disabled={!isValid}
       />
+      {development && (
+        <PrimaryButton
+          width={"100%"}
+          text={"Masuk"}
+          color={"#fff"}
+          backgroundColor={Colors.primary.pMutedTeal as string}
+          onPress={() => {
+            router.push("/(tabs)/home");
+          }}
+          disabled={false}
+        />
+      )}
     </View>
   );
 };

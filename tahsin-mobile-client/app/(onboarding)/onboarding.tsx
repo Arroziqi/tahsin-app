@@ -13,6 +13,7 @@ import OnboardingItem, {
 } from "@/components/ui/onboarding/onboarding-item";
 import OnboardingIndicator from "@/components/ui/onboarding/onboarding-indicator";
 import OnboardingButton from "@/components/ui/onboarding/onboarding-button";
+import { development } from "@/libs/core/config";
 
 const CONTENT: ContentItem[] = [
   {
@@ -43,7 +44,7 @@ const OnboardingScreen = () => {
       } else {
         setHasReachedEnd(false);
       }
-    },
+    }
   ).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
@@ -63,7 +64,7 @@ const OnboardingScreen = () => {
           bounces={false}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false },
+            { useNativeDriver: false }
           )}
           onViewableItemsChanged={viewableItemsChanged}
           viewabilityConfig={viewConfig}
