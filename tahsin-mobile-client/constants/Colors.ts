@@ -33,5 +33,6 @@ export const Colors = {
     seven: "#F0F5F5",
     pGrey: "#8789A3",
     red: "#E33C3C",
+    blue: "#007AFF",
   },
 };

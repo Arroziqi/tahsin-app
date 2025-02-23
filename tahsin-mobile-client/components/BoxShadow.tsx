@@ -1,24 +1,17 @@
 import React from "react";
-import { BoxShadowValue, StyleProp, StyleSheet } from "react-native";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
+import { StyleProp, View } from "react-native";
 import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
-interface BoxShadowProps {
+interface BoxshadowProps {
+  children: React.ReactNode;
   boxShadow?: string;
-  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-function BoxShadow({ boxShadow, children, style }: BoxShadowProps) {
-  return (
-    <View style={[styles.container, { boxShadow }, style]}>{children}</View>
-  );
+export default function Boxshadow({
+  children,
+  boxShadow = "0 0 10 1 rgba(0, 0, 0, 0.1)",
+  style,
+}: BoxshadowProps) {
+  return <View style={[style, { boxShadow }]}>{children}</View>;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    boxShadow: "4px 4px 30px 2px rgba(208, 193, 193, 0.25)",
-  },
-});
-
-export default BoxShadow;
