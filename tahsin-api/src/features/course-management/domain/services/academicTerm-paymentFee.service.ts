@@ -42,4 +42,12 @@ export class AcademicTermPaymentFeeService {
     await this.checkExistingPaymentFee(id);
     return await this.academicTermPaymentFeeRepository.findById(id);
   }
+
+  async getTuitionFeeByAcademicTermId(
+    id: number,
+  ): Promise<DataState<AcademicTermPaymentFeeEntity>> {
+    return await this.academicTermPaymentFeeRepository.findTuitionFeeByAcademicTermId(
+      id,
+    );
+  }
 }

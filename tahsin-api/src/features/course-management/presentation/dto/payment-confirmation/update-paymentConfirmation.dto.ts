@@ -1,8 +1,7 @@
 import { z } from 'zod';
-import { FeeType } from '@prisma/client';
+import { PaymentConfirmationStatus } from '@prisma/client';
 
 export const UpdatePaymentConfirmationSchema = z.object({
-  type: z.nativeEnum(FeeType).optional(),
   payment_receipt_img_path: z.string().optional(),
   amount: z.number().optional(),
   transaction_number: z.string().optional(),
@@ -10,6 +9,8 @@ export const UpdatePaymentConfirmationSchema = z.object({
     .string()
     .transform((val) => new Date(val))
     .optional(),
+  notes: z.string().optional(),
+  status: z.nativeEnum(PaymentConfirmationStatus).optional(),
   student_id: z.number().optional(),
 });
 

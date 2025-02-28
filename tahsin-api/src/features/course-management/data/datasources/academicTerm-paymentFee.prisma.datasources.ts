@@ -16,6 +16,9 @@ export interface AcademicTermPaymentFeePrismaDatasources {
   findByAcademicTermId(
     academicTerm_id: number,
   ): Promise<DataState<AcademicTermPaymentFeeModel[]>>;
+  findTuitionFeeByAcademicTermId(
+    academicTerm_id: number,
+  ): Promise<DataState<AcademicTermPaymentFeeModel>>;
   create(
     academicTermPaymentFee: AddAcademicTermPaymentFeeDto,
   ): Promise<DataState<AcademicTermPaymentFeeModel>>;
@@ -33,6 +36,30 @@ export class AcademicTermPaymentFeePrismaDatasourcesImpl
     AcademicTermPaymentFeePrismaDatasourcesImpl.name,
   );
   constructor(private readonly prismaService: PrismaService) {}
+
+  async findTuitionFeeByAcademicTermId(
+    academicTerm_id: number,
+  ): Promise<DataState<AcademicTermPaymentFeeModel>> {
+    try {
+      this.logger.log(`Finding academic term tuition fee by id`);
+      const data = await this.prismaService.academicTermPaymentFee.findFirst({
+        where: { academicTerm_id, type: 'TUITION_FEE' },
+      });
+
+      if (!data) {
+        this.logger.warn(`Academic term tuition fee by id not found`);
+        return new DataFailed(
+          new ErrorEntity(404, 'Academic term tuition fee not found'),
+        );
+      }
+
+      this.logger.log(`Successfully found academic term tuition fee by id`);
+      return new DataSuccess(new AcademicTermPaymentFeeModel(data));
+    } catch (error) {
+      this.logger.error(`Error finding academic term tuition fee by id`);
+      throw new ErrorEntity(error.statusCode, error.message);
+    }
+  }
 
   async findByAcademicTermId(
     academicTerm_id: number,

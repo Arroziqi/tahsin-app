@@ -7,6 +7,9 @@ export interface AcademicTermPaymentFeeRepository {
   findByAcademicTermId(
     academicTermId: number,
   ): Promise<DataState<AcademicTermPaymentFeeEntity[]>>;
+  findTuitionFeeByAcademicTermId(
+    academicTermId: number,
+  ): Promise<DataState<AcademicTermPaymentFeeEntity>>;
   create(
     paymentFee: AcademicTermPaymentFeeEntity,
   ): Promise<DataState<AcademicTermPaymentFeeEntity>>;

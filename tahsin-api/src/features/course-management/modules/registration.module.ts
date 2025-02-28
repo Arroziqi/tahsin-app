@@ -9,8 +9,11 @@ import { UpdateRegistrationUsecase } from '../domain/usecases/registration/updat
 import { REGISTRATION_REPO_TOKEN } from '../../../core/const/provider.token';
 import { AddManyRegistrationUsecase } from '../domain/usecases/registration/addMany-registration.usecase';
 import { UpdateLevelRegistrationUsecase } from '../domain/usecases/registration/updateLevel-registration.usecase';
+import { AcademicTermPaymentFeeModule } from './academicTerm-paymentFee.module';
+import { PaymentConfirmationModule } from './payment-confirmation.module';
 
 @Module({
+  imports: [AcademicTermPaymentFeeModule, PaymentConfirmationModule],
   controllers: [RegistrationController],
   providers: [
     RegistrationService,

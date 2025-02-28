@@ -8,8 +8,7 @@ import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 import { PrismaService } from '../../../../common/services/prisma.service';
 import { UpdatePaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/update-paymentConfirmation.dto';
 import { PaymentConfirmationModel } from '../models/payment-confirmation.model';
-import { AddPaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/add-paymentConfirmation.dto';
-import { AddManyPaymentConfirmationDto } from '../../presentation/dto/payment-confirmation/addMany-paymentConfirmation.dto';
+import { AddPaymentConfirmationDto } from '../dto/payment-confirmation/addPaymentConfirmation.dto';
 
 export interface PaymentConfirmationPrismaDatasources {
   findAll(): Promise<DataState<PaymentConfirmationModel[]>>;
@@ -24,7 +23,7 @@ export interface PaymentConfirmationPrismaDatasources {
     paymentConfirmation: Required<AddPaymentConfirmationDto>,
   ): Promise<DataState<PaymentConfirmationModel>>;
   createMany(
-    paymentConfirmations: Required<AddManyPaymentConfirmationDto>[],
+    paymentConfirmations: Required<AddPaymentConfirmationDto>[],
   ): Promise<DataState<PaymentConfirmationModel[]>>;
   update(
     paymentConfirmation: UpdatePaymentConfirmationDto & { id: number },
@@ -175,7 +174,7 @@ export class PaymentConfirmationPrismaDatasourcesImpl
   }
 
   async createMany(
-    paymentConfirmations: Required<AddManyPaymentConfirmationDto>[],
+    paymentConfirmations: Required<AddPaymentConfirmationDto>[],
   ): Promise<DataState<PaymentConfirmationModel[]>> {
     try {
       this.logger.log(`Adding payment confirmations to database`);

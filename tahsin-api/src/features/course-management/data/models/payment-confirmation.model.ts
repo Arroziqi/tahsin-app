@@ -5,7 +5,6 @@ import { AdminModel } from '../../../user-management/data/models/admin.model';
 
 export class PaymentConfirmationModel {
   id: number;
-  type: FeeTypesEnum;
   payment_receipt_img_path?: string;
   amount: number;
   transaction_number?: string;

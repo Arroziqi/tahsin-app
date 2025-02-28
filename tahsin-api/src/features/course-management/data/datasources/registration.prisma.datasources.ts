@@ -188,7 +188,6 @@ export class RegistrationPrismaDatasourcesImpl
         where: { id: registration.id },
         data: registration,
         include: {
-          Level: true,
           User: true,
         },
       });

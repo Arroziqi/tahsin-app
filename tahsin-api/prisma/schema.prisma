@@ -62,6 +62,7 @@ enum FeeType {
 }
 
 enum PaymentConfirmationStatus {
+  UNPAID
   PENDING
   VERIFIED
   REJECTED
@@ -134,13 +135,13 @@ model Event {
 }
 
 model Level {
-  id           Int            @id @default(autoincrement())
-  name         String         @unique(map: "levels_name_unique") @db.VarChar(255)
-  is_active    Boolean        @default(true)
-  created_at   DateTime       @default(now())
-  updated_at   DateTime       @updatedAt
-  classes      Class[]
-  Registration Registration[]
+  id         Int       @id @default(autoincrement())
+  name       String    @unique(map: "levels_name_unique") @db.VarChar(255)
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  classes    Class[]
+  Student    Student[]
 }
 
 model Teacher {
@@ -154,14 +155,18 @@ model Teacher {
 }
 
 model Student {
-  id                  Int                   @id @default(autoincrement())
-  user_id             Int                   @unique
-  status              StudentStatus         @default(INACTIVE)
-  admin_id            Int?
-  created_at          DateTime              @default(now())
-  updated_at          DateTime              @updatedAt
+  id              Int           @id @default(autoincrement())
+  registration_id Int
+  level_id        Int
+  user_id         Int           @unique
+  status          StudentStatus @default(INACTIVE)
+  admin_id        Int?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  Level               Level?                @relation(fields: [level_id], references: [id])
+  Registration        Registration?         @relation(fields: [registration_id], references: [id])
   User                User?                 @relation(fields: [user_id], references: [id])
-  Invoices            Invoices[]
   PaymentConfirmation PaymentConfirmation[]
 }
 
@@ -177,7 +182,6 @@ model Admin {
   AcademicTermPaymentFee AcademicTermPaymentFee[]
   PaymentConfirmation    PaymentConfirmation[]
   Registration           Registration[]
-  Invoices               Invoices[]
 }
 
 model Component {
@@ -297,8 +301,8 @@ model AcademicTermPaymentFee {
 
   Admin Admin? @relation(fields: [admin_id], references: [id])
 
-  AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
-  Invoices     Invoices[]
+  AcademicTerm        AcademicTerm?         @relation(fields: [academicTerm_id], references: [id])
+  PaymentConfirmation PaymentConfirmation[]
 }
 
 model Registration {
@@ -310,49 +314,32 @@ model Registration {
   user_id            Int
   audio_path         String?         @db.VarChar(255)
   available_dateTime DateTime?
-  level_id           Int?
   created_at         DateTime        @default(now())
   updated_at         DateTime        @updatedAt
   admin_id           Int?
 
   AcademicTerm AcademicTerm? @relation(fields: [academicTerm_id], references: [id])
   User         User?         @relation(fields: [user_id], references: [id])
-  Level        Level?        @relation(fields: [level_id], references: [id])
   Admin        Admin?        @relation(fields: [admin_id], references: [id])
-  Invoices     Invoices[]
+  Student      Student[]
 }
 
 model PaymentConfirmation {
-  id                       Int                       @id @default(autoincrement())
-  type                     FeeType
-  payment_receipt_img_path String?                   @db.VarChar(255)
-  amount                   Int
-  transaction_number       String?                   @unique
-  transaction_date         DateTime
-  status                   PaymentConfirmationStatus @default(PENDING)
-  notes                    String?                   @db.VarChar(500)
-  created_at               DateTime                  @default(now())
-  updated_at               DateTime                  @updatedAt
-  student_id               Int
-  admin_id                 Int?
-
-  Student Student? @relation(fields: [student_id], references: [id])
-  Admin   Admin?   @relation(fields: [admin_id], references: [id])
-}
-
-model Invoices {
-  id                        Int           @id @default(autoincrement())
+  id                        Int                       @id @default(autoincrement())
+  payment_receipt_img_path  String?                   @db.VarChar(255)
+  amount                    Int
+  outstanding_amount        Int
+  transaction_number        String?                   @unique
+  transaction_date          DateTime
+  status                    PaymentConfirmationStatus @default(UNPAID)
+  notes                     String?                   @db.VarChar(500)
+  created_at                DateTime                  @default(now())
+  updated_at                DateTime                  @updatedAt
   academicTermPaymentFee_id Int
-  registration_id           Int?
-  outstandingBalance        Int?
   student_id                Int
-  status                    PaymentStatus @default(UNPAID)
-  created_at                DateTime      @default(now())
-  updated_at                DateTime      @updatedAt
   admin_id                  Int?
 
   AcademicTermPaymentFee AcademicTermPaymentFee? @relation(fields: [academicTermPaymentFee_id], references: [id])
-  Registration           Registration?           @relation(fields: [registration_id], references: [id])
   Student                Student?                @relation(fields: [student_id], references: [id])
   Admin                  Admin?                  @relation(fields: [admin_id], references: [id])
 }

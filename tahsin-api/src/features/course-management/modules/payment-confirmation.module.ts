@@ -25,5 +25,6 @@ import { GetByStudentIdPaymentConfirmationUsecase } from '../domain/usecases/pay
       useClass: PaymentConfirmationPrismaDatasourcesImpl,
     },
   ],
+  exports: [AddPaymentConfirmationUsecase],
 })
 export class PaymentConfirmationModule {}

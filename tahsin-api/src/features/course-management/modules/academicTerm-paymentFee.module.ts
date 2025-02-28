@@ -21,5 +21,6 @@ import { ACADEMIC_TERM_PAYMENT_FEE_REPO_TOKEN } from '../../../core/const/provid
       useClass: AcademicTermPaymentFeePrismaDatasourcesImpl,
     },
   ],
+  exports: [AcademicTermPaymentFeeService],
 })
 export class AcademicTermPaymentFeeModule {}

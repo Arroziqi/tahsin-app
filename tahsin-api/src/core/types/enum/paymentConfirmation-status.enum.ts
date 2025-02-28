@@ -1,1 +1,5 @@
-export type PaymentConfirmationStatusEnum = 'PENDING' | 'VERIFIED' | 'REJECTED';
+export type PaymentConfirmationStatusEnum =
+  | 'UNPAID'
+  | 'PENDING'
+  | 'VERIFIED'
+  | 'REJECTED';

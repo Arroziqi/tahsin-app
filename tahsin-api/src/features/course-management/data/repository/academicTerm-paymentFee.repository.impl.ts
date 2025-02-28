@@ -16,6 +16,14 @@ export class AcademicTermPaymentFeeRepositoryImpl
     private readonly academicTermPaymentFeeRepository: AcademicTermPaymentFeeRepository,
   ) {}
 
+  async findTuitionFeeByAcademicTermId(
+    academicTermId: number,
+  ): Promise<DataState<AcademicTermPaymentFeeEntity>> {
+    return await this.academicTermPaymentFeeRepository.findTuitionFeeByAcademicTermId(
+      academicTermId,
+    );
+  }
+
   async findByAcademicTermId(
     academicTermId: number,
   ): Promise<DataState<AcademicTermPaymentFeeEntity[]>> {
