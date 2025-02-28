@@ -2,6 +2,7 @@ import { Global, Logger, Module } from '@nestjs/common';
 import {
   PROFILE_REPO_TOKEN,
   ROLE_REPO_TOKEN,
+  STUDENT_REPO_TOKEN,
   USER_REPO_TOKEN,
 } from 'src/core/const/provider.token';
 import { PrismaDataSourcesImpl } from './data/datasources/local/prisma.datasources';
@@ -36,6 +37,9 @@ import { AddUsersUsecase } from 'src/features/user-management/domain/usecases/au
 import { UserService } from 'src/features/user-management/domain/services/user.service';
 import { ProfileService } from './domain/services/profile.service';
 import { CreateManyProfileUsecase } from './domain/usecases/profile/createMany-profile.usecase';
+import { AddStudentUseCase } from './domain/usecases/student/addStudent.usecase';
+import { StudentService } from './domain/services/student.service';
+import { StudentPrismaDatasourcesImpl } from './data/datasources/local/student.prisma.datasources';
 
 @Global()
 @Module({
@@ -61,10 +65,12 @@ import { CreateManyProfileUsecase } from './domain/usecases/profile/createMany-p
     CreateProfileUsecase,
     CreateManyProfileUsecase,
     UpdateProfileUsecase,
+    AddStudentUseCase,
     ProfileService,
     AuthService,
     PasswordService,
     DataService,
+    StudentService,
     LocalStrategy,
     JwtStrategy,
     RefreshTokenStrategy,
@@ -81,7 +87,11 @@ import { CreateManyProfileUsecase } from './domain/usecases/profile/createMany-p
       provide: PROFILE_REPO_TOKEN,
       useClass: ProfileDatasourcesImpl,
     },
+    {
+      provide: STUDENT_REPO_TOKEN,
+      useClass: StudentPrismaDatasourcesImpl,
+    },
   ],
-  exports: [UserService],
+  exports: [UserService, StudentService, AddStudentUseCase],
 })
 export class AuthModule {}
