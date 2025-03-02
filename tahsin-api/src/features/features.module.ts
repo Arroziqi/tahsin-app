@@ -5,9 +5,10 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './user-management/guards/jwt-auth/jwt.auth.guard';
 import { GlobalExceptionFilter } from '../core/filter/error.filter';
 import { CourseManagementModule } from './course-management/course-management.module';
+import { UserModule } from './user-management/modules/user.module';
 
 @Module({
-  imports: [MasterDataModule, AuthModule, CourseManagementModule],
+  imports: [MasterDataModule, AuthModule, CourseManagementModule, UserModule],
   providers: [
     {
       provide: APP_GUARD,

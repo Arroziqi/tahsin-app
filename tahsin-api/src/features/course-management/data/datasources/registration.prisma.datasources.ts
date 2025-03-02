@@ -139,6 +139,9 @@ export class RegistrationPrismaDatasourcesImpl
       this.logger.log(`Creating registration`);
       const data = await this.prismaService.registration.create({
         data: registration,
+        include: {
+          AcademicTerm: true,
+        },
       });
 
       this.logger.log(`Successfully created registration`);

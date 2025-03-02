@@ -21,10 +21,9 @@ import { UpdateRegistrationPipe } from '../../pipes/registration/update-registra
 import { GetAllRegistrationUsecase } from '../../domain/usecases/registration/getAll-registration.usecase';
 import { UserBody } from 'src/common/decorators/user-body.decorator';
 import { AdminBody } from '../../../../common/decorators/admin-body.decorator';
-import { AddManyRegistrationPipe } from '../../pipes/registration/addMany-registration.pipe';
 import { AddManyRegistrationUsecase } from '../../domain/usecases/registration/addMany-registration.usecase';
-import { UpdateLevelRegistrationPipe } from '../../pipes/registration/updateLevel-registration.pipe';
 import { UpdateLevelRegistrationUsecase } from '../../domain/usecases/registration/updateLevel-registration.usecase';
+import { AcademicTermPaymentFeeEntity } from '../../domain/entities/academicTerm-paymentFee.entity';
 
 @Controller('/api/registrations')
 @UseGuards(RolesGuard)
@@ -60,7 +59,13 @@ export class RegistrationController {
   @Post()
   async createRegistration(
     @UserBody(AddRegistrationPipe) request: RegistrationEntity,
-  ): Promise<DataState<RegistrationEntity>> {
+  ): Promise<
+    DataState<
+      RegistrationEntity & {
+        academicTermPaymentFee: AcademicTermPaymentFeeEntity;
+      }
+    >
+  > {
     try {
       this.logger.debug('Creating registration', { request });
       const result = await this.addRegistrationUsecase.execute(request);
@@ -75,13 +80,46 @@ export class RegistrationController {
     }
   }
 
-  @Post('/create-many')
+  @Post('/addRegistration/:id')
   @Roles(['Admin'])
-  async createManyRegistrations(
-    @AdminBody(AddManyRegistrationPipe) registrations: RegistrationEntity[],
-  ): Promise<DataState<RegistrationEntity[]>> {
-    return await this.addManyRegistrationUsecase.execute(registrations);
+  async addRegistrationByAdmin(
+    @Param('id', ParseIntPipe) user_id: number,
+    @AdminBody(AddRegistrationPipe) request: RegistrationEntity,
+  ): Promise<
+    DataState<
+      RegistrationEntity & {
+        academicTermPaymentFee: AcademicTermPaymentFeeEntity;
+      }
+    >
+  > {
+    try {
+      this.logger.debug('Creating registration', { request });
+      const result: DataState<
+        RegistrationEntity & {
+          academicTermPaymentFee: AcademicTermPaymentFeeEntity;
+        }
+      > = await this.addRegistrationUsecase.execute({
+        ...request,
+        user_id,
+      });
+
+      this.logger.log('Successfully created registration');
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to create registration', {
+        error: error.message,
+      });
+      throw error;
+    }
   }
+
+  // @Post('/create-many')
+  // @Roles(['Admin'])
+  // async createManyRegistrations(
+  //   @AdminBody(AddManyRegistrationPipe) registrations: RegistrationEntity[],
+  // ): Promise<DataState<RegistrationEntity[]>> {
+  //   return await this.addManyRegistrationUsecase.execute(registrations);
+  // }
 
   @Patch(':id')
   async updateRegistration(
@@ -99,29 +137,6 @@ export class RegistrationController {
       return result;
     } catch (error) {
       this.logger.error('Failed to update registration', {
-        error: error.message,
-      });
-      throw error;
-    }
-  }
-
-  @Patch('/update-level/:id')
-  @Roles(['Admin'])
-  async updateLevelRegistration(
-    @Param('id', ParseIntPipe) id: number,
-    @AdminBody(UpdateLevelRegistrationPipe) request: RegistrationEntity,
-  ): Promise<DataState<RegistrationEntity>> {
-    try {
-      this.logger.debug('Updating level registration', { id, request });
-      const result = await this.updateLevelRegistrationUsecase.execute({
-        id,
-        ...request,
-      });
-
-      this.logger.log('Successfully updated level registration');
-      return result;
-    } catch (error) {
-      this.logger.error('Failed to update level registration', {
         error: error.message,
       });
       throw error;

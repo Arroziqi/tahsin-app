@@ -156,8 +156,8 @@ model Teacher {
 
 model Student {
   id              Int           @id @default(autoincrement())
-  registration_id Int
-  level_id        Int
+  registration_id Int           @unique
+  level_id        Int?
   user_id         Int           @unique
   status          StudentStatus @default(INACTIVE)
   admin_id        Int?
