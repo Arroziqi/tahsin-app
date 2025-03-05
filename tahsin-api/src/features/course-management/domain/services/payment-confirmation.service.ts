@@ -47,12 +47,4 @@ export class PaymentConfirmationService {
     await this.checkExistingPaymentConfirmation(id);
     return await this.paymentConfirmationRepository.findById(id);
   }
-
-  //   TODO: create a payment confirmation with
-  //   - amount = 0
-  //   - notes = "tagihan tuition fee"
-  //   - outstanding_amount = {tuition_fee}
-  //   - status = 'UNPAID'
-  //   - academicTermPaymentFee_id = {tuition_fee.id}
-  //   - student_id = {student.id}
 }

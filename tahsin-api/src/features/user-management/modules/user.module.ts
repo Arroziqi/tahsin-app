@@ -21,10 +21,13 @@ import {
 import { RolePrismaDataSourcesImpl } from '../data/datasources/local/role.prisma.datasources';
 import { ProfileDatasourcesImpl } from '../data/datasources/local/profile.datasources';
 import { StudentPrismaDatasourcesImpl } from '../data/datasources/local/student.prisma.datasources';
+import { UpdateStudentUseCase } from '../domain/usecases/student/updateStudent.usecase';
+import { StudentController } from '../presentation/controllers/student/student.controller';
+import { GetAllStudentUsecase } from '../domain/usecases/student/getAllStudent.usecase';
 
 @Global()
 @Module({
-  controllers: [RoleController, ProfileController],
+  controllers: [RoleController, ProfileController, StudentController],
   providers: [
     CreateRoleUsecase,
     GetAllRoleUsecase,
@@ -36,6 +39,8 @@ import { StudentPrismaDatasourcesImpl } from '../data/datasources/local/student.
     CreateManyProfileUsecase,
     UpdateProfileUsecase,
     AddStudentUseCase,
+    UpdateStudentUseCase,
+    GetAllStudentUsecase,
     ProfileService,
     StudentService,
     {
@@ -51,6 +56,6 @@ import { StudentPrismaDatasourcesImpl } from '../data/datasources/local/student.
       useClass: StudentPrismaDatasourcesImpl,
     },
   ],
-  exports: [AddStudentUseCase, StudentService],
+  exports: [AddStudentUseCase, StudentService, UpdateStudentUseCase],
 })
 export class UserModule {}

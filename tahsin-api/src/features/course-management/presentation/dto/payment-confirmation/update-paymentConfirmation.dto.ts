@@ -10,7 +10,7 @@ export const UpdatePaymentConfirmationSchema = z.object({
     .transform((val) => new Date(val))
     .optional(),
   notes: z.string().optional(),
-  status: z.nativeEnum(PaymentConfirmationStatus).optional(),
+  status: z.nativeEnum(PaymentConfirmationStatus).default('PENDING'),
   student_id: z.number().optional(),
 });
 
