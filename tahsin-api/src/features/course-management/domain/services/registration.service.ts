@@ -1,9 +1,19 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { REGISTRATION_REPO_TOKEN } from '../../../../core/const/provider.token';
 import { RegistrationRepository } from '../repositories/registration.repository';
 import { RegistrationEntity } from '../entities/registration.entity';
 import { DataState } from 'src/core/resources/data.state';
 import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
+import { ProfileEntity } from '../../../user-management/domain/entities/profile.entity';
+import { ProfileService } from '../../../user-management/domain/services/profile.service';
+import { AcademicTermPaymentFeeEntity } from '../entities/academicTerm-paymentFee.entity';
+import { AcademicTermPaymentFeeService } from './academicTerm-paymentFee.service';
 
 @Injectable()
 export class RegistrationService {
@@ -11,6 +21,8 @@ export class RegistrationService {
   constructor(
     @Inject(REGISTRATION_REPO_TOKEN)
     private readonly registrationRepository: RegistrationRepository,
+    private readonly profileService: ProfileService,
+    private readonly academicTermPaymentFeeService: AcademicTermPaymentFeeService,
   ) {}
 
   async checkDuplicateRegistration(
@@ -54,5 +66,38 @@ export class RegistrationService {
   async getRegistration(id: number): Promise<DataState<RegistrationEntity>> {
     await this.checkExistingRegistration(id);
     return await this.registrationRepository.findById(id);
+  }
+
+  async checkExistingProfileWithUserId(userId: number): Promise<void> {
+    this.logger.debug(`Checking profile with user id: ${userId}`);
+    const existingProfileWithUserId: DataState<ProfileEntity> =
+      await this.profileService.checkExistingProfileWithUserId(userId);
+
+    if (existingProfileWithUserId.error) {
+      this.logger.warn(
+        `Profile with user id ${existingProfileWithUserId.error}`,
+      );
+      throw new NotFoundException(`Please create profile first!`);
+    }
+  }
+
+  async getTuitionFeeByAcademicTermId(
+    academicTermId: number,
+  ): Promise<DataState<AcademicTermPaymentFeeEntity>> {
+    this.logger.debug('getting tuition fee');
+    const tuitionFee: DataState<AcademicTermPaymentFeeEntity> =
+      await this.academicTermPaymentFeeService.getTuitionFeeByAcademicTermId(
+        academicTermId,
+      );
+
+    if (tuitionFee.error) {
+      throw new ErrorEntity(
+        404,
+        `please create academic term payment fee first`,
+        `tuition fee not found.`,
+      );
+    }
+
+    return tuitionFee;
   }
 }

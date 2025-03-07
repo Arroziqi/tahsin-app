@@ -2,7 +2,8 @@ import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ACADEMIC_TERM_PAYMENT_FEE_REPO_TOKEN } from '../../../../core/const/provider.token';
 import { AcademicTermPaymentFeeRepository } from '../repositories/academicTerm-paymentFee.repository';
 import { AcademicTermPaymentFeeEntity } from '../entities/academicTerm-paymentFee.entity';
-import { DataState } from 'src/core/resources/data.state';
+import { DataFailed, DataState } from 'src/core/resources/data.state';
+import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 
 @Injectable()
 export class AcademicTermPaymentFeeService {
@@ -46,8 +47,15 @@ export class AcademicTermPaymentFeeService {
   async getTuitionFeeByAcademicTermId(
     id: number,
   ): Promise<DataState<AcademicTermPaymentFeeEntity>> {
-    return await this.academicTermPaymentFeeRepository.findTuitionFeeByAcademicTermId(
-      id,
-    );
+    const tuitionFee: DataState<AcademicTermPaymentFeeEntity> =
+      await this.academicTermPaymentFeeRepository.findTuitionFeeByAcademicTermId(
+        id,
+      );
+
+    if (!tuitionFee.data) {
+      return new DataFailed(new ErrorEntity(404, `tuition fee not found.`));
+    }
+
+    return tuitionFee;
   }
 }

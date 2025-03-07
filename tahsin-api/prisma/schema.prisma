@@ -329,7 +329,7 @@ model PaymentConfirmation {
   payment_receipt_img_path  String?                   @db.VarChar(255)
   amount                    Int
   outstanding_amount        Int
-  transaction_number        String?                   @unique
+  transaction_number        String                   @unique
   transaction_date          DateTime
   status                    PaymentConfirmationStatus @default(UNPAID)
   notes                     String?                   @db.VarChar(500)

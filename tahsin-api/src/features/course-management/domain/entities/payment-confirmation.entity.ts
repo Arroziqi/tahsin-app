@@ -8,7 +8,7 @@ export class PaymentConfirmationEntity {
   payment_receipt_img_path?: string;
   amount: number;
   outstanding_amount: number;
-  transaction_number?: string;
+  transaction_number: string;
   transaction_date: Date;
   status: PaymentConfirmationStatusEnum;
   notes?: string;

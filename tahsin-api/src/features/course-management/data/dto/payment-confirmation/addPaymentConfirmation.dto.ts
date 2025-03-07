@@ -4,8 +4,8 @@ export interface AddPaymentConfirmationDto {
   payment_receipt_img_path?: string;
   amount: number;
   outstanding_amount: number;
-  transaction_number?: string;
   transaction_date: Date;
+  transaction_number: string;
   status: PaymentConfirmationStatusEnum;
   notes?: string;
   created_at?: Date;

@@ -1,5 +1,4 @@
 import { PaymentConfirmationStatusEnum } from 'src/core/types/enum/paymentConfirmation-status.enum';
-import { FeeTypesEnum } from 'src/core/types/enum/fee-types.enum';
 import { StudentModel } from '../../../user-management/data/models/student.model';
 import { AdminModel } from '../../../user-management/data/models/admin.model';
 
@@ -7,7 +6,7 @@ export class PaymentConfirmationModel {
   id: number;
   payment_receipt_img_path?: string;
   amount: number;
-  transaction_number?: string;
+  transaction_number: string;
   transaction_date: Date;
   status: PaymentConfirmationStatusEnum;
   notes?: string;

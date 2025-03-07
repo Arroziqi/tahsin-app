@@ -80,10 +80,9 @@ export class RegistrationController {
     }
   }
 
-  @Post('/addRegistration/:id')
+  @Post('/addRegistration')
   @Roles(['Admin'])
   async addRegistrationByAdmin(
-    @Param('id', ParseIntPipe) user_id: number,
     @AdminBody(AddRegistrationPipe) request: RegistrationEntity,
   ): Promise<
     DataState<
@@ -98,10 +97,7 @@ export class RegistrationController {
         RegistrationEntity & {
           academicTermPaymentFee: AcademicTermPaymentFeeEntity;
         }
-      > = await this.addRegistrationUsecase.execute({
-        ...request,
-        user_id,
-      });
+      > = await this.addRegistrationUsecase.execute(request);
 
       this.logger.log('Successfully created registration');
       return result;

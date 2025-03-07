@@ -56,6 +56,11 @@ import { GetAllStudentUsecase } from '../domain/usecases/student/getAllStudent.u
       useClass: StudentPrismaDatasourcesImpl,
     },
   ],
-  exports: [AddStudentUseCase, StudentService, UpdateStudentUseCase],
+  exports: [
+    AddStudentUseCase,
+    StudentService,
+    UpdateStudentUseCase,
+    ProfileService,
+  ],
 })
 export class UserModule {}

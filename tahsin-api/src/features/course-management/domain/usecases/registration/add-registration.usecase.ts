@@ -33,27 +33,33 @@ export class AddRegistrationUsecase
       }
     >
   > {
+    const tuitionFee: DataState<AcademicTermPaymentFeeEntity> =
+      await this.registrationService.getTuitionFeeByAcademicTermId(
+        input.academicTerm_id,
+      );
+
+    await this.registrationService.checkExistingProfileWithUserId(
+      input.user_id,
+    );
+
     await this.registrationService.checkDuplicateRegistration(
       input.user_id,
       input.academicTerm_id,
     );
 
     this.logger.debug('Creating registration');
-    const result = await this.registrationRepository.create(input);
-
-    this.logger.debug('getting tuition fee');
-    const tuitionFee =
-      await this.academicTermPaymentFeeService.getTuitionFeeByAcademicTermId(
-        input.academicTerm_id,
-      );
+    const result: DataState<RegistrationEntity> =
+      await this.registrationRepository.create(input);
 
     this.logger.debug(`creating student`);
-    const student = await this.addStudentUsecase.execute(
-      new StudentEntity({
-        registration_id: result.data.id,
-        user_id: result.data.user_id,
-      }),
-    );
+    const student: DataState<StudentEntity> =
+      await this.addStudentUsecase.execute(
+        new StudentEntity({
+          registration_id: result.data.id,
+          user_id: result.data.user_id,
+          admin_id: input.admin_id,
+        }),
+      );
 
     this.logger.debug('creating invoice');
     await this.addPaymentConfirmationUseCase.execute(
@@ -64,6 +70,7 @@ export class AddRegistrationUsecase
         transaction_date: new Date(),
         notes: 'tuition invoice',
         student_id: student.data.id,
+        admin_id: input.admin_id,
       }),
     );
 

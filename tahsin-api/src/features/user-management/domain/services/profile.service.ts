@@ -6,6 +6,9 @@ import {
 import { UserRepository } from '../repository/user.repository';
 import { ProfileRepository } from '../repository/profile.repository';
 import { UserService } from './user.service';
+import { ProfileEntity } from '../entities/profile.entity';
+import { DataFailed, DataState } from '../../../../core/resources/data.state';
+import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 
 @Injectable()
 export class ProfileService {
@@ -27,5 +30,23 @@ export class ProfileService {
         `Profile already exists for user id ${userId}`,
       );
     }
+  }
+
+  async checkExistingProfileWithUserId(
+    userId: number,
+  ): Promise<DataState<ProfileEntity>> {
+    this.logger.debug(`Checking if profile exists for user id: ${userId}`);
+    const existingProfile = await this.profileRepository.findByUserId(userId);
+    if (!existingProfile.data) {
+      this.logger.warn(`Profile doesn't exists for user id: ${userId}`);
+      return new DataFailed(
+        new ErrorEntity(
+          404,
+          `Profile doesn't exists for user id: ${userId}`,
+          `not found`,
+        ),
+      );
+    }
+    return existingProfile;
   }
 }
