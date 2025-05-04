@@ -1,0 +1,6 @@
+projectKey=test-tahsin
+serverUrl=http://localhost:9000
+serverVersion=25.4.0.105899
+dashboardUrl=http://localhost:9000/dashboard?id=test-tahsin
+ceTaskId=1b19b679-2987-4096-a856-33daf4f5f6c8
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1b19b679-2987-4096-a856-33daf4f5f6c8

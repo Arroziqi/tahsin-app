@@ -3,6 +3,7 @@ import { PAYMENT_CONFIRMATION_REPO_TOKEN } from '../../../../core/const/provider
 import { PaymentConfirmationRepository } from '../repositories/payment-confirmation.repository';
 import { PaymentConfirmationEntity } from '../entities/payment-confirmation.entity';
 import { DataState } from 'src/core/resources/data.state';
+import { ErrorEntity } from '../../../../core/domain/entities/error.entity';
 
 @Injectable()
 export class PaymentConfirmationService {
@@ -46,5 +47,21 @@ export class PaymentConfirmationService {
   ): Promise<DataState<PaymentConfirmationEntity>> {
     await this.checkExistingPaymentConfirmation(id);
     return await this.paymentConfirmationRepository.findById(id);
+  }
+
+  calculateUpdatedRemainingAmount(
+    amount: number,
+    outstandingAmount: number,
+  ): number {
+    if (amount > outstandingAmount) {
+      this.logger.warn('amount payment is more than remaining payment');
+      throw new ErrorEntity(
+        400,
+        `amount payment is more than remaining payment`,
+        'Bad Request',
+      );
+    }
+
+    return outstandingAmount - amount;
   }
 }

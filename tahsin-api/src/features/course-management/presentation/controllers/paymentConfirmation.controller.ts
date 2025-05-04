@@ -30,7 +30,9 @@ import { GetByStudentIdPaymentConfirmationUsecase } from '../../domain/usecases/
 @UseGuards(RolesGuard)
 @Roles(['Admin', 'Student'])
 export class PaymentConfirmationController {
-  private readonly logger = new Logger(PaymentConfirmationController.name);
+  private readonly logger: Logger = new Logger(
+    PaymentConfirmationController.name,
+  );
   constructor(
     private readonly getAllPaymentConfirmationsUsecase: GetAllPaymentConfirmationUsecase,
     private readonly getByStudentIdPaymentConfirmationUsecase: GetByStudentIdPaymentConfirmationUsecase,
@@ -66,7 +68,7 @@ export class PaymentConfirmationController {
   ): Promise<DataState<PaymentConfirmationEntity[]>> {
     try {
       this.logger.debug('Getting payment confirmations');
-      const result =
+      const result: DataState<PaymentConfirmationEntity[]> =
         await this.getByStudentIdPaymentConfirmationUsecase.execute(studentId);
 
       this.logger.log('Successfully retrieved payment confirmations');
@@ -79,6 +81,7 @@ export class PaymentConfirmationController {
     }
   }
 
+  // TODO: Fix this error
   @Get('/student')
   @Roles(['Student'])
   async getCurrentUserPaymentConfirmations(
@@ -86,7 +89,7 @@ export class PaymentConfirmationController {
   ): Promise<DataState<PaymentConfirmationEntity[]>> {
     try {
       this.logger.debug('Getting payment confirmations');
-      const result =
+      const result: DataState<PaymentConfirmationEntity[]> =
         await this.getByStudentIdPaymentConfirmationUsecase.execute(
           studentId.user_id,
         );
@@ -107,7 +110,8 @@ export class PaymentConfirmationController {
   ): Promise<DataState<PaymentConfirmationEntity>> {
     try {
       this.logger.debug('Creating payment confirmation', { request });
-      const result = await this.addPaymentConfirmationUsecase.execute(request);
+      const result: DataState<PaymentConfirmationEntity> =
+        await this.addPaymentConfirmationUsecase.execute(request);
 
       this.logger.log('Successfully created payment confirmation');
       return result;
@@ -134,12 +138,15 @@ export class PaymentConfirmationController {
     @Param('id', ParseIntPipe) id: number,
     @UserBody(UpdatePaymentConfirmationPipe) request: PaymentConfirmationEntity,
   ): Promise<DataState<PaymentConfirmationEntity>> {
+    console.log({ id, request });
+    throw new Error('1asasa');
     try {
       this.logger.debug('Updating payment confirmation', { id, request });
-      const result = await this.updatePaymentConfirmationUsecase.execute({
-        id,
-        ...request,
-      });
+      const result: DataState<PaymentConfirmationEntity> =
+        await this.updatePaymentConfirmationUsecase.execute({
+          id,
+          ...request,
+        });
 
       this.logger.log('Successfully updated payment confirmation');
       return result;
@@ -164,10 +171,11 @@ export class PaymentConfirmationController {
         id,
         request,
       });
-      const result = await this.updatePaymentConfirmationUsecase.execute({
-        id,
-        ...request,
-      });
+      const result: DataState<PaymentConfirmationEntity> =
+        await this.updatePaymentConfirmationUsecase.execute({
+          id,
+          ...request,
+        });
 
       this.logger.log('Successfully updated status payment confirmation');
       return result;
@@ -185,7 +193,8 @@ export class PaymentConfirmationController {
   ): Promise<DataState<string>> {
     try {
       this.logger.debug('Deleting payment confirmation', { id });
-      const result = await this.deletePaymentConfirmationUsecase.execute(id);
+      const result: DataState<string> =
+        await this.deletePaymentConfirmationUsecase.execute(id);
 
       this.logger.log('Successfully deleted payment confirmation');
       return result;

@@ -7,7 +7,7 @@ export const UpdatePaymentConfirmationSchema = z.object({
   transaction_number: z.string().optional(),
   transaction_date: z
     .string()
-    .transform((val) => new Date(val))
+    .transform((val: string): Date => new Date(val))
     .optional(),
   notes: z.string().optional(),
   status: z.nativeEnum(PaymentConfirmationStatus).default('PENDING'),

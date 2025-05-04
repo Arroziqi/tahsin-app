@@ -30,6 +30,7 @@ export class AddRegistrationUsecase
     DataState<
       RegistrationEntity & {
         academicTermPaymentFee: AcademicTermPaymentFeeEntity;
+        invoice: PaymentConfirmationEntity;
       }
     >
   > {
@@ -62,21 +63,26 @@ export class AddRegistrationUsecase
       );
 
     this.logger.debug('creating invoice');
-    await this.addPaymentConfirmationUseCase.execute(
-      new PaymentConfirmationEntity({
-        amount: 0,
-        academicTermPaymentFee_id: tuitionFee.data.id,
-        outstanding_amount: tuitionFee.data.amount,
-        transaction_date: new Date(),
-        notes: 'tuition invoice',
-        student_id: student.data.id,
-        admin_id: input.admin_id,
-      }),
-    );
+    const invoice: DataState<PaymentConfirmationEntity> =
+      await this.addPaymentConfirmationUseCase.execute(
+        new PaymentConfirmationEntity({
+          amount: 0,
+          academicTermPaymentFee_id: tuitionFee.data.id,
+          outstanding_amount: tuitionFee.data.amount,
+          transaction_date: new Date(),
+          notes: 'tuition invoice',
+          student_id: student.data.id,
+          admin_id: input.admin_id,
+        }),
+      );
 
     this.logger.log(`new registration created`);
     return {
-      data: { ...result.data, academicTermPaymentFee: tuitionFee.data },
+      data: {
+        ...result.data,
+        academicTermPaymentFee: tuitionFee.data,
+        invoice: invoice.data,
+      },
     };
   }
 }

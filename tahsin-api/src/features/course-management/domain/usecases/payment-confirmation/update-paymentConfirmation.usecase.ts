@@ -27,20 +27,19 @@ export class UpdatePaymentConfirmationUsecase
     const existingPaymentConfirmation: DataState<PaymentConfirmationEntity> =
       await this.paymentConfirmationService.getPaymentConfirmation(input.id);
 
+    const remainingAmount: number =
+      this.paymentConfirmationService.calculateUpdatedRemainingAmount(
+        input.amount,
+        existingPaymentConfirmation.data.outstanding_amount,
+      );
+
     let data: PaymentConfirmationEntity = {
       ...input,
       created_at: existingPaymentConfirmation.data.created_at,
+      outstanding_amount: remainingAmount,
     };
 
     if (input.status === 'VERIFIED') {
-      const remainingAmount: number =
-        existingPaymentConfirmation.data.outstanding_amount - input.amount;
-
-      data = {
-        ...data,
-        outstanding_amount: remainingAmount,
-      };
-
       await this.updateStudentUsecase.execute(
         new StudentEntity({ id: input.student_id, status: 'ACTIVE' }),
       );
